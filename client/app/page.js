@@ -43,15 +43,24 @@ export default function Home() {
             <Button variant="ghost" className="cursor-pointer">ყველას ნახვა <ChevronRight /></Button>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center gap-12">
-
-                 {restaurants.map((value) => (
-                    <div key={value.id}>
-                      <Image src = {value.img} alt = {value.name} width={100} height={100} />
-                    </div>
-                 ))}
-          </div>
-        </div>
+          <div className="flex flex-col md:flex-row items-center gap-12 ">
+  {restaurants.map((value) => (
+    <div
+      key={value.id}
+      className="w-[350px] h-[200px] relative overflow-hidden rounded-md group"
+    >
+      <Image
+        src={value.img}
+        alt={value.name}
+        layout="fill"
+        objectFit="cover"
+        className="rounded-md shadow-lg cursor-pointer transition-transform duration-300 ease-in-out group-hover:scale-105"
+      />
+      <h2>{value.name}</h2>
+    </div>
+  ))}
+</div>
+</div>
       </section>
     </main>
   );

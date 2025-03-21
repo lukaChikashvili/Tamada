@@ -28,6 +28,15 @@ export const tamadas = [
         price: "$500"
 
     },
+    {
+        id: 4,
+        name: "ალიკა ბოკუჩავა",
+        birth: "1965",
+        img: "https://cdn.gencraft.com/prod/user/55be27d7-a48d-4306-b5f5-19e57b7bd533/52df8791-96cb-45d2-9718-2e2b6d8b87dc/image/image1_0.jpg?Expires=1742661683&Signature=hNQUsNAFLSvFH-3GEGqhM0jFRJza2RvWq~5C018c-MRns~UAy4tD99yzR8UJyjea6KEpTsJsbzQVqF1XTltb-YEsTsFbPnwDZADsSdCYdskXijDVcE~dDywyhtIXCqgtZY-dOBz2UGuZpWJCF5i-QQd3NfW4XFHgMeHLrDybNHeSmZv1KnHzdG1F8ov6zzuMI2ACO-l1T2b6V4VmBa03R8-9Gb2Vw6pbo1HSx8k2ZFsXCM2A7a1lqt1wxn2s1PfFGYRj7-kMPEFrIuyuqMu2yf65d7QKQtswscJV9cbZJ0ZroaK297JsNDXTjY-wc2Q9WRuG8Du8dByrfb5FGCS-rQ__&Key-Pair-Id=K3RDDB1TZ8BHT8",
+        drinkNumber: "30",
+        price: "$500"
+
+    },
   
 
 
