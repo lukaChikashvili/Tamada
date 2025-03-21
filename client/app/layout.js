@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         className={`${inter.className}`}
       >
         <Header />
-        <main className="min-h-screen w-full flex justify-center items-center"> 
+        <main className="min-h-screen   "> 
         {children}
         </main>
       </body>
