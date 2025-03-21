@@ -1,6 +1,9 @@
 import TamadaCard from "@/components/TamadaCard";
 import { Button } from "@/components/ui/button";
+import { restaurants } from "@/public/restaurants";
 import { tamadas } from "@/public/tamadas";
+import {  ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -18,15 +21,35 @@ export default function Home() {
 
       <section className="py-12">
         <div>
-          <div>
+          <div className="flex items-center justify-between">
             <h2 className="border-b py-8 text-3xl text-slate-800 font-extrabold">ცნობილი თამადები</h2>
+            <Button variant="ghost" className="cursor-pointer">ყველას ნახვა <ChevronRight /></Button>
           </div>
 
-          <div className="flex items-center gap-12">
+          <div className="flex flex-col md:flex-row items-center gap-12">
 
           {tamadas.map((value) => (
             <TamadaCard key = {value.id} value = {value}/>
           ))}
+          </div>
+        </div>
+      </section>
+
+
+      <section className="py-12">
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="border-b py-8 text-3xl text-slate-800 font-extrabold">მოძებნე რესტორანით</h2>
+            <Button variant="ghost" className="cursor-pointer">ყველას ნახვა <ChevronRight /></Button>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center gap-12">
+
+                 {restaurants.map((value) => (
+                    <div key={value.id}>
+                      <Image src = {value.img} alt = {value.name} width={100} height={100} />
+                    </div>
+                 ))}
           </div>
         </div>
       </section>
