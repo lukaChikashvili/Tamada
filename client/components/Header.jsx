@@ -1,12 +1,14 @@
-import { SignOutButton, SignedIn } from '@clerk/nextjs'
+import { SignInButton, SignOutButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import logo from '../public/logo.png'
-import { User } from 'lucide-react'
+import { Heart, LogIn, User } from 'lucide-react'
 import { Button } from './ui/button'
 
-const Header = () => {
+const Header = ({ isAdminPage = false}) => {
+
+  const isAdmin = false;
   return (
     <header className='fixes top-0 w-full backdrop-blur-md z-50 border-b'>
        <nav className='mx-auto px-12 py-4 flex items-center justify-between'>
@@ -19,15 +21,40 @@ const Header = () => {
             />
          </Link>
 
-         <div>
+         <div className='flex gap-4'>
           <SignedIn>
              <Link href = "saved-tamadas">
-              <Button variant="destructive" className='flex gap-4 cursor-pointer'>
+              <Button variant="outline" className='flex gap-4 cursor-pointer'>
                 <User />
-              შენახული თამადები
+                <span className='hidden md:inline'>დაჯავშნილი თამადები</span>
+                </Button></Link>
+
+                <Link href = "saved-tamadas">
+              <Button variant="destructive" className='flex gap-4 cursor-pointer'>
+                <Heart />
+              <span className='hidden md:inline'>შენახული თამადები</span>
                 </Button></Link>
           </SignedIn>
+
+          <SignedOut>
+            <SignInButton forceRedirectUrl='/'>
+               <Button variant="destructive" className="cursor-pointer"> <LogIn />შესვლა</Button>
+            </SignInButton>
+          </SignedOut>
+
+    
+          <SignedIn>
+            <UserButton appearance={
+              {
+                elements: {
+                 avatarImage: "w-36 h-36"
+                }
+              }
+            } />
+          </SignedIn>
+       
          </div>
+        
        </nav>
     </header>
   )
