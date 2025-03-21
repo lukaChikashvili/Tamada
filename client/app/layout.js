@@ -16,6 +16,12 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
     <html lang="en">
+    <head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.web-fonts.ge/fonts/arial-geo/css/arial-geo.min.css"
+        />
+      </head>
       <body
         className={`${inter.className}`}
       >

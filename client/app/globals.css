@@ -1,7 +1,12 @@
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+body {
+  font-family: "Arial GEO", sans-serif;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -119,4 +124,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+.texture {
+  background-color: #bf0f1e;
+background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+
 }
