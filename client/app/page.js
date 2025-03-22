@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { faqData } from "@/public/faq";
 import { restaurants } from "@/public/restaurants";
 import { tamadas } from "@/public/tamadas";
+import { SignedOut } from "@clerk/nextjs";
 import {  ChevronRight, Wine } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -118,7 +120,7 @@ export default function Home() {
    
    <Accordion type = "single" collapsible className = "w-full ">
     {faqData.map((faq, index) => (
-       <AccordionItem key = {faq.id} value = {`item-${index}`}>
+       <AccordionItem key = {index} value = {`item-${index}`}>
        <AccordionTrigger className="text-xl text-slate-600 cursor-pointer transition duration-300  hover:text-red-400">{faq.question}</AccordionTrigger>
        <AccordionContent className="text-xl cursor-pointer">
          {faq.answer}
@@ -129,6 +131,27 @@ export default function Home() {
    </Accordion>
 
 
+  </div>
+</section>
+
+<section className="py-12 texture text-center">
+  <div className="container mx-auto px-4 flex flex-col gap-4">
+     <h2 className="text-3xl text-white font-bold">მზად ხარ სასურველი თამადა იპოვო?</h2>
+
+     <p className="text-xl text-slate-900">შეურთდი ათასზე მეტ კმაყოფილ მომხმარებელს, რომლემბაც სასურველი თამადა წამებში აარჩიეს</p>
+
+     <div className="flex flex-col md:flex-row justify-center gap-4">
+       <Button variant="outline">
+          <Link href = "/tamadas">იხილეთ ყველა თამადა</Link>
+       </Button>
+
+       <SignedOut>
+       <Button >
+          <Link href = "/tamadas">დარეგისტრირდი ახლავე</Link>
+       </Button>
+
+       </SignedOut>
+     </div>
   </div>
 </section>
 
