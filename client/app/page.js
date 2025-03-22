@@ -138,7 +138,7 @@ export default function Home() {
   <div className="container mx-auto px-4 flex flex-col gap-4">
      <h2 className="text-3xl text-white font-bold">მზად ხარ სასურველი თამადა იპოვო?</h2>
 
-     <p className="text-xl text-slate-900">შეურთდი ათასზე მეტ კმაყოფილ მომხმარებელს, რომლემბაც სასურველი თამადა წამებში აარჩიეს</p>
+     <p className="text-xl text-slate-900">შეურთდი ათასზე მეტ კმაყოფილ მომხმარებელს, რომლებმაც სასურველი თამადა წამებში აარჩიეს</p>
 
      <div className="flex flex-col md:flex-row justify-center gap-4">
        <Button variant="outline">
@@ -147,7 +147,7 @@ export default function Home() {
 
        <SignedOut>
        <Button >
-          <Link href = "/tamadas">დარეგისტრირდი ახლავე</Link>
+          <Link href = "/sign-up">დარეგისტრირდი ახლავე</Link>
        </Button>
 
        </SignedOut>
