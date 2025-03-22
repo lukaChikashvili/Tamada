@@ -1,5 +1,7 @@
 import TamadaCard from "@/components/TamadaCard";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { faqData } from "@/public/faq";
 import { restaurants } from "@/public/restaurants";
 import { tamadas } from "@/public/tamadas";
 import {  ChevronRight, Wine } from "lucide-react";
@@ -104,6 +106,29 @@ export default function Home() {
         </div>
       ))}
     </div>
+  </div>
+</section>
+
+
+
+<section className="py-12 ">
+
+  <div className="container mx-auto px-4">
+  <h2 className="border-b py-8 text-3xl text-slate-800 font-extrabold">ხშირად დასმული კითხვები</h2>
+   
+   <Accordion type = "single" collapsible className = "w-full ">
+    {faqData.map((faq, index) => (
+       <AccordionItem key = {faq.id} value = {`item-${index}`}>
+       <AccordionTrigger className="text-xl text-slate-600 cursor-pointer transition duration-300  hover:text-red-400">{faq.question}</AccordionTrigger>
+       <AccordionContent className="text-xl cursor-pointer">
+         {faq.answer}
+       </AccordionContent>
+</AccordionItem>
+    ))}
+    
+   </Accordion>
+
+
   </div>
 </section>
 
