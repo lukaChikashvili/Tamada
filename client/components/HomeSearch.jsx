@@ -4,6 +4,7 @@ import { Input } from './ui/input'
 import { Camera, Upload } from 'lucide-react'
 import { Button } from './ui/button'
 import { useDropzone } from 'react-dropzone'
+import { toast } from 'sonner'
 
 const HomeSearch = () => {
    
@@ -20,7 +21,32 @@ const HomeSearch = () => {
 
 
     const onDrop = (acceptedFiles) => {
-         // do somethibg
+         const file = acceptedFiles[0];
+
+         if(file) {
+            if(file.size > 5 * 1024 * 1024) {
+                toast.error("სურათის ზომა  უნდა იყოს 5 მეგაბაიტზე ნაკლები");
+                return;
+            }
+
+            setIsUploading(true);
+            setSearchImage(file);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+                setIsUploading(false);
+                toast.success('სურათი აიტვირთა წარმატებით');
+            }
+
+            reader.onerror = () => {
+                
+                setIsUploading(false);
+                toast.error('სურათის წაკითხვა ვერ მოხერხდა');
+            }
+
+            reader.readAsDataURL(file);
+         }
       };
 
       const {getRootProps, getInputProps, isDragActive, isDragReject} = useDropzone({
@@ -66,7 +92,16 @@ const HomeSearch = () => {
          <div className='mt-4'>
             <form onSubmit = {handleImageSearch}>
               <div className='bg-gray-200 rounded-lg shadow-lg p-6'>
-                {imagePreview ? <div></div> : (
+                {imagePreview ? <div>
+                    <img src = {imagePreview} alt = "img preview" className='h-40 object-contain mb-4' />
+                    <Button variant="outline" 
+                     onClick = {() => {
+                        setSearchImage(null);
+                        setImagePreview("");
+                        toast.info("სურათი წაიშალა");
+                     }}
+                    >წაშალეთ სურათი</Button>
+                </div> : (
                     <div {...getRootProps()} className='flex flex-col items-center gap-4'>
                     <input {...getInputProps()} />
                     <Upload className='h-12 w-12 text-red-400  ' />
