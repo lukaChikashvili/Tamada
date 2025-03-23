@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String       @id @default(uuid())
+  clerkUserId   String       @unique 
+  email         String       @unique 
+  name          String?       
+  imageUrl      String?      
+  phone         String?  
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  role          UserRole     @default(USER)
+  savedTamadas  UserSavedTamada[]
+  meeting       MeetingBooking[]
+}
+
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Tamada {
+    id            String       @id @default(uuid())
+    name          String
+    year          Int
+    price         Decimal       @db.Decimal(10, 2)
+    drinks        Int
+    city          String
+    language      String
+    stomachSize   Int
+    features      String
+    description   String
+    images        String[]
+    savedBy       UserSavedTamada[]
+    meetingBookings  MeetingBooking[]
+    createdAt     DateTime     @default(now())
+    updatedAt     DateTime     @updatedAt
+
+    @@index([name, drinks])
+      @@index([price])
+        @@index([features])
+          @@index([language])
+           @@index([city])
+           @@index([stomachSize])
+
+    
+}
+
+
+model UserSavedTamada {
+   id      String     @id @default(uuid())
+   userId  String 
+   user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+   tamadaId  String
+   tamada    Tamada     @relation(fields: [tamadaId], references: [id], onDelete: Cascade)
+   savedAt    DateTime   @default(now())
+
+   @@unique([userId, tamadaId])
+   @@index([userId])
+   @@index([tamadaId])
+}
+
+model MeetingBooking {
+   id      String     @id @default(uuid())
+   tamadaId  String   
+   tamada    Tamada      @relation(fields: [tamadaId], references: [id])
+   userId   String
+   user     User         @relation(fields: [userId], references: [id])
+   bookingDate   DateTime     @db.Date
+   startTime    String
+   endTime     String
+   notes  String?
+    createdAt     DateTime     @default(now())
+    updatedAt     DateTime     @updatedAt
+
+    @@index([tamadaId])
+    @@index([userId])
+    @@index([bookingDate])
+    
+
+}

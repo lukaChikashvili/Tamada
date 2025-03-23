@@ -138,7 +138,7 @@ const HomeSearch = () => {
                 )}
               </div>
 
-              {imagePreview && <Button type ="submit" className="w-full" disabled = {isUploading}>
+              {imagePreview && <Button variant="outline" type ="submit" className="w-full mt-2 cursor-pointer" disabled = {isUploading} >
                  {isUploading ? "იტვირთება..." : "ამ სურათით ძებნა"}
                 </Button>}
             </form>
