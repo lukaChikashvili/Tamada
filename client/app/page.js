@@ -1,3 +1,4 @@
+import HomeSearch from "@/components/HomeSearch";
 import TamadaCard from "@/components/TamadaCard";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,9 @@ export default function Home() {
               <h1 className="text-white text-5xl md:text-5xl max-w-4xl m-auto font-bold leading-[5rem]">იპოვეთ სასურველი თამადა ხელოვნური ინტელექტის დახმარებით</h1>
 
              <p className="text-red-500 bg-white w-120 m-auto rounded-md p-2 shadow-xl mt-12 ">გაახალისე შენი ქორწილი, ქელეხი ან დაბადების დღე</p>
+            </div>
+            <div className="w-1/2 m-auto mt-8">
+            <HomeSearch />
             </div>
          </div>
       </section>
