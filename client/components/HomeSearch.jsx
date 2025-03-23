@@ -5,6 +5,8 @@ import { Camera, Upload } from 'lucide-react'
 import { Button } from './ui/button'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+
 
 const HomeSearch = () => {
    
@@ -15,9 +17,26 @@ const HomeSearch = () => {
     const [searchImage, setSearchImage] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
+    const router = useRouter();
 
-    const handleTextSubmit = () => {}
-    const handleImageSearch = () => {}
+    const handleTextSubmit = (e) => {
+      e.preventDefault();
+
+      if(!searchTerm.trim()) {
+        toast.error("გთხოვთ ჩაწეროთ საძიებო სიტყვა");
+            return;
+      }
+
+      router.push(`/tamadas/search=${encodeURIComponent(searchTerm)}`);
+    }
+    const handleImageSearch = async (e) => {
+        e.preventDefault();
+
+        if(!searchImage) {
+            toast.error("გთხოვთ ჯერ ატვირთოდ სურათი");
+            return;
+        }
+    }
 
 
     const onDrop = (acceptedFiles) => {
@@ -92,9 +111,10 @@ const HomeSearch = () => {
          <div className='mt-4'>
             <form onSubmit = {handleImageSearch}>
               <div className='bg-gray-200 rounded-lg shadow-lg p-6'>
-                {imagePreview ? <div>
-                    <img src = {imagePreview} alt = "img preview" className='h-40 object-contain mb-4' />
-                    <Button variant="outline" 
+                {imagePreview ? <div className='flex flex-col items-center gap-4'>
+                    <img src = {imagePreview} alt = "img preview" className='h-40 object-contain mb-4 shadow-lg rounded-md' />
+                    <Button variant="outline"
+                    className="cursor-pointer" 
                      onClick = {() => {
                         setSearchImage(null);
                         setImagePreview("");
@@ -117,6 +137,10 @@ const HomeSearch = () => {
                   </div>
                 )}
               </div>
+
+              {imagePreview && <Button type ="submit" className="w-full" disabled = {isUploading}>
+                 {isUploading ? "იტვირთება..." : "ამ სურათით ძებნა"}
+                </Button>}
             </form>
             </div>
       )}
