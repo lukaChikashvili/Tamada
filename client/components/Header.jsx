@@ -5,10 +5,13 @@ import React from 'react'
 import logo from '../public/logo.png'
 import { Heart, LogIn, User } from 'lucide-react'
 import { Button } from './ui/button'
+import { checkUser } from '@/lib/checkUser'
 
-const Header = ({ isAdminPage = false}) => {
+const Header = async ({ isAdminPage = false}) => {
 
-  const isAdmin = false;
+  const user = await checkUser();
+
+  const isAdmin = user?.role === "ADMIN";
   return (
     <header className='fixes top-0 w-full backdrop-blur-md z-50 border-b'>
        <nav className='mx-auto px-12 py-4 flex items-center justify-between'>
