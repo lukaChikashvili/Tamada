@@ -35,31 +35,41 @@ enum UserRole {
 }
 
 model Tamada {
-    id            String       @id @default(uuid())
-    name          String
-    year          Int
-    price         Decimal       @db.Decimal(10, 2)
-    drinks        Int
-    city          String
-    language      String
-    stomachSize   Int
-    features      String
-    description   String
-    images        String[]
-    savedBy       UserSavedTamada[]
-    meetingBookings  MeetingBooking[]
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @updatedAt
+    id               String       @id @default(uuid())
+    name             String
+    year             Int // Year of birth or experience
+    price            Decimal      @db.Decimal(10, 2) // Price for hiring Tamada
+    drinks           Int // Number of drinks consumed or handled
+    city             String // City where the Tamada is based
+    language         String // Languages spoken by the Tamada
+    stomachSize      Int // Size of stomach (small, medium, large)
+    features         String // Unique characteristics of the Tamada
+    description      String // Short bio or listing description
+    images          String[] // List of images of the Tamada
+    humorLevel       Int // Humor rating (1-10)
+    speechQuality    Int // Eloquence rating (1-10)
+    nationality      String // Tamada's nationality
+    experienceYears  Int // Number of years as a Tamada
+    clothingStyle    String // Traditional, modern, mixed
+    popularityScore  Int @default(0) // Popularity rating (0-100)
+    eventTypes       String[] // Types of events handled (wedding, supra, corporate, etc.)
+    alcoholTolerance Int // Ability to handle alcohol (1-10)
+    awards          String[] // Awards or recognitions
+    savedBy         UserSavedTamada[] // Users who saved this Tamada
+    meetingBookings MeetingBooking[] // Bookings for this Tamada
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
 
     @@index([name, drinks])
-      @@index([price])
-        @@index([features])
-          @@index([language])
-           @@index([city])
-           @@index([stomachSize])
-
-    
+    @@index([price])
+    @@index([features])
+    @@index([language])
+    @@index([city])
+    @@index([stomachSize])
+    @@index([experienceYears])
+    @@index([popularityScore])
 }
+
 
 
 model UserSavedTamada {
