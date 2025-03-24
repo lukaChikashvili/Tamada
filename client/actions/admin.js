@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function getAdmin() {
     const { userId } = await auth();
@@ -19,5 +19,5 @@ export async function getAdmin() {
     }
 
     return { authorized: true, reason: " admin"};
-    
+
 }
