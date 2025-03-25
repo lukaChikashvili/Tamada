@@ -4,7 +4,7 @@ import React from 'react'
 const page = () => {
   return (
     <div>
-      adminpage
+      this is admin page
     </div>
   )
 }
