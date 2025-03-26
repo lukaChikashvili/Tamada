@@ -1,6 +1,6 @@
 "use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,11 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useDropzone } from 'react-dropzone/';
+import { Loader2, Upload, X } from 'lucide-react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 const AddTamadaForm = () => {
 
@@ -18,6 +23,9 @@ const AddTamadaForm = () => {
     const clothingStyle = ["ჩვეულებრივი", "შარვალ-კოსტუმი", "ჩოხა-ახალუხი", "ტიტველი"];
     const rating = ["ცნობილი", "ძაან ცნობილი", "მეტ-ნაკლებად ცნობილი", "კაციშვილი არ იცნობს", "ეგი ვინაა სიმონ?"];
 
+    const [imageError, setImageError] = useState("");
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploadedImages, setUploadedImages] = useState([]);
     
     const tamadaFormSchema = z.object({
         name: z.string().min(1, "name is required"),
@@ -46,6 +54,61 @@ const AddTamadaForm = () => {
 
     });
 
+    const onMultiImagesDrop = useCallback((acceptedFiles) => {
+        const validFiles = acceptedFiles.filter((file) => {
+          if (file.size > 5 * 1024 * 1024) {
+            toast.error(`${file.name} exceeds 5MB limit and will be skipped`);
+            return false;
+          }
+          return true;
+        });
+    
+        if (validFiles.length === 0) return;
+
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 10;
+          setUploadProgress(progress);
+    
+          if (progress >= 100) {
+            clearInterval(interval);
+    
+            
+            const newImages = [];
+            validFiles.forEach((file) => {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                newImages.push(e.target.result);
+    
+                
+                if (newImages.length === validFiles.length) {
+                  setUploadedImages((prev) => [...prev, ...newImages]);
+                  setUploadProgress(0);
+                  setImageError("");
+                  toast.success(
+                    `Successfully uploaded ${validFiles.length} images`
+                  );
+                }
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+        }, 200);
+      }, []);
+
+      const {
+        getRootProps: getMultiImageRootProps,
+        getInputProps: getMultiImageInputProps,
+      } = useDropzone({
+        onDrop: onMultiImagesDrop,
+        accept: {
+          "image/*": [".jpeg", ".jpg", ".png", ".webp"],
+        },
+        multiple: true,
+      });
+        
+
+
     const {
         register,
         setValue,
@@ -60,6 +123,12 @@ const AddTamadaForm = () => {
     })
 
     const [activeTab, setActiveTab] = useState("ai");
+
+    const removeImage = (index) => {
+        setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+      };
+
+
   return (
     <div>
             <Tabs
@@ -333,8 +402,89 @@ const AddTamadaForm = () => {
 
                 
                   
+                <div>
+                  <Label
+                    htmlFor="images"
+                    className={imageError ? "text-red-500" : ""}
+                  >
+                    სურათები{" "}
+                    {imageError && <span className="text-red-500">*</span>}
+                  </Label>
+                  <div className="mt-2">
+                    <div
+                      {...getMultiImageRootProps()}
+                      className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition ${
+                        imageError ? "border-red-500" : "border-gray-300"
+                      }`}
+                    >
+                      <input {...getMultiImageInputProps()} />
+                      <div className="flex flex-col items-center justify-center">
+                        <Upload className="h-12 w-12 text-gray-400 mb-3" />
+                        <span className="text-sm text-gray-600">
+                          Drag & drop or click to upload multiple images
+                        </span>
+                        <span className="text-xs text-gray-500 mt-1">
+                          (JPG, PNG, WebP, max 5MB each)
+                        </span>
+                      </div>
+                    </div>
+                    {imageError && (
+                      <p className="text-xs text-red-500 mt-1">{imageError}</p>
+                    )}
+                    {uploadProgress > 0 && (
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                        <div
+                          className="bg-blue-600 h-2.5 rounded-full"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                    )}
+                  </div>
 
+                  {uploadedImages.length > 0 && (
+                    <div className="mt-4">
+                      <h3 className="text-sm font-medium mb-2">
+                        Uploaded Images ({uploadedImages.length})
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {uploadedImages.map((image, index) => (
+                          <div key={index} className="relative group">
+                            <Image
+                              src={image}
+                              alt={`Car image ${index + 1}`}
+                              height={50}
+                              width={50}
+                              className="h-28 w-full object-cover rounded-md"
+                              priority
+                            />
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="destructive"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeImage(index)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                
+                  </div>
+
+                  <Button
+                  type="submit"
+                  variant = "destructive"
+                  className="w-full md:w-auto"
+                  >
                   
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Adding Car...
+                  
+                
+                </Button>
 
               </form>
             </CardContent>
