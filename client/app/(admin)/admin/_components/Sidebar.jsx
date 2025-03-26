@@ -37,7 +37,7 @@ const Sidebar = () => {
 
   return (
   <>
-       <div className="hidden md:flex h-full flex-col overflow-y-auto bg-white shadow-sm border-r">
+       <div className="hidden md:flex  h-full flex-col overflow-y-auto bg-white shadow-sm border-r">
         <div className="p-6">
           <Link href="/admin">
             <h1 className="text-xl font-bold">თამადა ადმინი</h1>
