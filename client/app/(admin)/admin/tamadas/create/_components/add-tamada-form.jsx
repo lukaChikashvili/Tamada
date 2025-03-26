@@ -109,6 +109,17 @@ const AddTamadaForm = () => {
         
 
 
+      // submit form
+      const onSubmit = async (data) => {
+        if(uploadedImages.length === 0) {
+            setImageError("ატვირთეთ ერთი ან მეტი სურათი");
+            return;
+        }
+
+        
+      }
+
+
     const {
         register,
         setValue,
@@ -151,7 +162,7 @@ const AddTamadaForm = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form  className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)}  className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* name */}
                   <div className="space-y-2">
