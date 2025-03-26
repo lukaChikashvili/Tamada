@@ -1,9 +1,11 @@
+"use server"
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { auth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { v4 as uuidv4 } from "uuid";
 
 async function fileToBase64(file) {
     const bytes = await file.arrayBuffer();
@@ -211,6 +213,8 @@ export async function addTamada({tamadaData, images}) {
       });
 
       revalidatePath('/admin/tamadas');
+
+      console.log(tamada)
 
       return {
         success: true,

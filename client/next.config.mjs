@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverComponentsHmrCache: false, 
+  },
     images: {
         domains: ["cdn.gencraft.com"],
         remotePatterns: [

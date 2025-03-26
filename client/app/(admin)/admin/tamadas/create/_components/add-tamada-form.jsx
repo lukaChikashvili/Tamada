@@ -1,6 +1,6 @@
 "use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,9 @@ import { Loader2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import useFetch from '@/hooks/use-fetch';
+import { addTamada } from '@/actions/tamadas';
+import { useRouter } from 'next/navigation';
 
 const AddTamadaForm = () => {
 
@@ -26,21 +29,23 @@ const AddTamadaForm = () => {
     const [imageError, setImageError] = useState("");
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadedImages, setUploadedImages] = useState([]);
+
+    const router = useRouter();
     
     const tamadaFormSchema = z.object({
-        name: z.string().min(1, "name is required"),
+        name: z.string().min(1, "სახელი აუცილებელია"),
         year: z.string().refine((val) => {
             const year = parseInt(val);
             return !isNaN(year) && year >= 1900 && year <= new Date().getFullYear() + 1;
-          }, "Valid year required"),
-        price: z.string().min(1, "price is required"),
-        drinks: z.number().min(1, "drinks is required"),
-        city: z.string().min(1, "city is required"),
-        language: z.string().min(1, "language is required"),
-        stomachSize: z.number().min(1, "stomachSize is required"),
+          }, "წელი აუცილებელია"),
+        price: z.string().min(1, "ფასი აუცილებელია"),
+        drinks: z.number().min(1, "ჭიქები აუცილებელია"),
+        city: z.string().min(1, "ქალაქი აუცილებელია"),
+        language: z.string().min(1, "ენა აუცილებელია"),
+        stomachSize: z.number().min(1, "ღიპის ზომა აუცილებელია"),
         features: z.string().optional(),  
         description: z.string().optional(), 
-        humorLevel: z.number().min(1).max(10, "Humor level should be between 1 and 10"),
+        humorLevel: z.number().min(1).max(10, "Humor level should be between 1 and 10").optional(),
         speechQuality: z.number().min(1).max(10, "Speech quality should be between 1 and 10"),
         nationality: z.string().min(1, "Nationality is required"),
         experienceYears: z.number().min(1, "Experience years are required"),
@@ -108,6 +113,19 @@ const AddTamadaForm = () => {
       });
         
 
+      const {
+        loading: addTamadaLoading,
+        fn: addTamadafn,
+        data: addTamadaResult,
+      } = useFetch(addTamada);
+
+      useEffect(() => {
+        if (addTamadaResult?.success) {
+          toast.success("თამადა აიტვირთა წარმატებით");
+          router.push("/admin/tamadas");
+        }
+      }, [addTamadaResult, router]);
+
 
       // submit form
       const onSubmit = async (data) => {
@@ -116,7 +134,25 @@ const AddTamadaForm = () => {
             return;
         }
 
-        
+        const tamadaData = {
+            ...data,
+            year: parseInt(data.year),
+            price: parseFloat(data.price),
+            humorLevel: parseInt(data.humorLevel),
+
+           
+
+        };
+
+        const response = await addTamadafn({
+            tamadaData,
+            images: uploadedImages
+        })
+
+        console.log(response)
+
+
+
       }
 
 
@@ -221,7 +257,7 @@ const AddTamadaForm = () => {
                       placeholder="e.g. ქუთაისი"
                       className={errors.city ? "border-red-500" : ""}
                     />
-                    {errors.price && (
+                    {errors.city && (
                       <p className="text-xs text-red-500">
                         {errors.city.message}
                       </p>
@@ -233,7 +269,7 @@ const AddTamadaForm = () => {
                     <Label htmlFor="drinks">ჭიქის რაოდენობა</Label>
                     <Input
                       id="drinks"
-                      {...register("drinks")}
+                      {...register("drinks", { valueAsNumber: true })}
                       placeholder="e.g. 10"
                       className={errors.drinks ? "border-red-500" : ""}
                     />
@@ -249,7 +285,7 @@ const AddTamadaForm = () => {
                     <Label htmlFor="stomachSize">ღიპის ზომა</Label>
                     <Input
                       id="stomachSize"
-                      {...register("stomachSize")}
+                      {...register("stomachSize", { valueAsNumber: true })}
                       placeholder="e.g. 50"
                       className={errors.stomachSize ? "border-red-500" : ""}
                     />
@@ -341,17 +377,7 @@ const AddTamadaForm = () => {
                   </div>
 
                   {/* humor level */}
-                  <div className="space-y-2">
-                    <Label htmlFor="humorLevel">
-                      იუმორის დონე{" "}
-                      <span className="text-sm text-gray-500">(არჩევითი)</span>
-                    </Label>
-                    <Input
-                      id="humorLevel"
-                      {...register("humorLevel")}
-                      placeholder="e.g. 5"
-                    />
-                  </div>
+                  
 
                   {/* popularityScore */}
                   <div className="space-y-2">
@@ -487,14 +513,18 @@ const AddTamadaForm = () => {
 
                   <Button
                   type="submit"
-                  variant = "destructive"
                   className="w-full md:w-auto"
-                  >
+                  disabled={addTamadaLoading}
                   
+                >
+                  {addTamadaLoading ? (
+                    <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Adding Car...
-                  
-                
+                      ემატება თამადა...
+                    </>
+                  ) : (
+                    "დაამატე თამადა"
+                  )}
                 </Button>
 
               </form>
