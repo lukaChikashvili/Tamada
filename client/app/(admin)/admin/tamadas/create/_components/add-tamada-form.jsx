@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import useFetch from '@/hooks/use-fetch';
-import { AddTamadaToDb, addTamada } from '@/actions/tamadas';
+import { AddTamadaToDb } from '@/actions/tamadas';
 import { useRouter } from 'next/navigation';
 
 const AddTamadaForm = () => {
@@ -52,9 +52,7 @@ const AddTamadaForm = () => {
         experienceYears: z.number().min(1, "Experience years are required"),
         clothingStyle: z.string().min(1, "Clothing style is required"), 
         popularityScore: z.string().min(0).max(100, "Popularity score should be between 0 and 100"),
-        eventTypes: z.string(z.string()).min(1, "At least one event type is required"),  
-        alcoholTolerance: z.number().min(1).max(10, "Alcohol tolerance should be between 1 and 10"),
-        awards: z.array(z.string()).optional(),
+        eventTypes:  z.string().min(1, "At least one event type is required"),
         featured: z.boolean().default(false),  
         
 
@@ -149,13 +147,21 @@ const AddTamadaForm = () => {
     
 
       // submit form
-      const onSubmit = async (data) => {
-        if (uploadedImages.length === 0) {
-          setImageError("Please upload at least one image");
-          return;
-        }
+      const onSubmit = async ( data) => {
+       
 
-        
+        const tamadaDatato = {
+          ...data,
+          year: parseInt(data.year),
+          price: parseFloat(data.price),
+          
+        };
+    
+       
+        await addTamadafn({
+          tamadaDatato,
+          images: uploadedImages,
+        });
           console.log("🔥 onSubmit triggered with:", data);
 
 
@@ -190,7 +196,7 @@ const AddTamadaForm = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)}   className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* name */}
                   <div className="space-y-2">
@@ -351,6 +357,7 @@ const AddTamadaForm = () => {
                   <div className="space-y-2">
                     <Label htmlFor="language">სასაუბრო ენა</Label>
                     <Select
+                     {...register("language", { required: "ენა აუცილებელია" })}
                       onValueChange={(value) => setValue("language", value)}
                       defaultValue={getValues("language")}
                     >
@@ -376,6 +383,7 @@ const AddTamadaForm = () => {
                   <div className="space-y-2">
                     <Label htmlFor="nationality">ეროვნება</Label>
                     <Select
+                     {...register("nationality", { required: "ენა აუცილებელია" })}
                       onValueChange={(value) => setValue("nationality", value)}
                       defaultValue={getValues("nationality")}
                     >
@@ -402,6 +410,7 @@ const AddTamadaForm = () => {
                   <div className="space-y-2">
                     <Label htmlFor="bodyType">ჩაცმის სტილი</Label>
                     <Select
+                        {...register("clothinStyle", { required: "ენა აუცილებელია" })}
                       onValueChange={(value) => setValue("clothingStyle", value)}
                       defaultValue={getValues("clothingStyle")}
                     >
@@ -434,6 +443,7 @@ const AddTamadaForm = () => {
                   <div className="space-y-2">
                     <Label htmlFor="popularityScore">პოპულარობის დონე</Label>
                     <Select
+                     {...register("popularityScore", { required: "ენა აუცილებელია" })}
                       onValueChange={(value) => setValue("popularityScore", value)}
                       defaultValue={getValues("popularityScore")}
                     >
@@ -463,6 +473,7 @@ const AddTamadaForm = () => {
                 <div className="space-y-2">
                     <Label htmlFor="eventTypes">ივენთის ტიპი</Label>
                     <Select
+                     {...register("eventTypes", { required: "ენა აუცილებელია" })}
                       onValueChange={(value) => setValue("eventTypes", value)}
                       defaultValue={getValues("eventTypes")}
                     >
@@ -511,6 +522,7 @@ const AddTamadaForm = () => {
                 <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
                   <Checkbox
                     id="featured"
+                    
                     checked={watch("featured")}
                     onCheckedChange={(checked) => {
                       setValue("featured", checked);

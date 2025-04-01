@@ -51,7 +51,7 @@ model Tamada {
     nationality      String // Tamada's nationality
     experienceYears  Int // Number of years as a Tamada
     clothingStyle    String // Traditional, modern, mixed
-    popularityScore  Int @default(0) // Popularity rating (0-100)
+    popularityScore  String // Popularity rating (0-100)
     eventTypes       String // Types of events handled (wedding, supra, corporate, etc.)
     savedBy         UserSavedTamada[] // Users who saved this Tamada
     meetingBookings MeetingBooking[] // Bookings for this Tamada

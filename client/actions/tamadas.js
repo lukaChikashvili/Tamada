@@ -124,10 +124,11 @@ export async function processTamadaImageWithAi(file) {
 
 
 
-export async function AddTamadaToDb({tamadaData, images}) {
+export async function AddTamadaToDb({tamadaDatato, images}) {
   
     try { 
         const { userId } = await auth();
+        console.log("✅ Authenticated User ID:", userId);
         if (!userId) throw new Error("Unauthorized");
     
         const user = await db.user.findUnique({
@@ -191,29 +192,30 @@ export async function AddTamadaToDb({tamadaData, images}) {
       const tamada = await db.tamada.create({
         data: {
           id: tamadaId, // Unique ID for the Tamada
-          name: tamadaData.name, // Tamada's name
-          year: tamadaData.year, // Year of birth or experience
-          price: tamadaData.price, // Price for hiring the Tamada
-          drinks: tamadaData.drinkNumber, // Number of drinks consumed
-          city: tamadaData.city, // City where the Tamada is based
-          language: tamadaData.language, // Languages spoken
-          stomachSize: tamadaData.stomachSize, // Stomach size (small, medium, large)
-          description: tamadaData.description, // Short bio or listing description
+          name: tamadaDatato.name, // Tamada's name
+          year: tamadaDatato.year, // Year of birth or experience
+          price: tamadaDatato.price, // Price for hiring the Tamada
+          drinks: tamadaDatato.drinks, // Number of drinks consumed
+          city: tamadaDatato.city, // City where the Tamada is based
+          language: tamadaDatato.language, // Languages spoken
+          stomachSize: tamadaDatato.stomachSize, // Stomach size (small, medium, large)
+          description: tamadaDatato.description, // Short bio or listing description
           images: imageUrls, // List of images
-          humorLevel: tamadaData.humorLevel, // Humor level (1-10)
-          speechQuality: tamadaData.speechQuality, // Eloquence rating (1-10)
-          nationality: tamadaData.nationality, // Nationality
-          experienceYears: tamadaData.experienceYears, // Years as a Tamada
-          clothingStyle: tamadaData.clothingStyle, // Traditional, modern, mixed
-          popularityScore: tamadaData.popularityScore ?? 0, // Popularity rating (0-100)
-          eventTypes: tamadaData.eventTypes, // Types of events handled
+          humorLevel: tamadaDatato.humorLevel, // Humor level (1-10)
+          speechQuality: tamadaDatato.speechQuality, // Eloquence rating (1-10)
+          nationality: tamadaDatato.nationality, // Nationality
+          experienceYears: tamadaDatato.experienceYears, // Years as a Tamada
+          clothingStyle: tamadaDatato.clothingStyle, // Traditional, modern, mixed
+          popularityScore: tamadaDatato.popularityScore , // Popularity rating (0-100)
+          eventTypes: tamadaDatato.eventTypes, // Types of events handled
+          featured: tamadaDatato.featured,
           createdAt: new Date(), // Timestamp for creation
         }
       });
 
       revalidatePath('/admin/tamadas');
 
-      console.log(tamada.data)
+      console.log("✅ Tamada successfully added:", tamada);
 
       return {
         success: true,
