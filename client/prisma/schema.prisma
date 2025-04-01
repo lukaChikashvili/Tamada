@@ -43,7 +43,6 @@ model Tamada {
     city             String // City where the Tamada is based
     language         String // Languages spoken by the Tamada
     stomachSize      Int // Size of stomach (small, medium, large)
-    features         String // Unique characteristics of the Tamada
     description      String // Short bio or listing description
     images          String[] // List of images of the Tamada
     humorLevel       Int // Humor rating (1-10)
@@ -52,9 +51,7 @@ model Tamada {
     experienceYears  Int // Number of years as a Tamada
     clothingStyle    String // Traditional, modern, mixed
     popularityScore  Int @default(0) // Popularity rating (0-100)
-    eventTypes       String[] // Types of events handled (wedding, supra, corporate, etc.)
-    alcoholTolerance Int // Ability to handle alcohol (1-10)
-    awards          String[] // Awards or recognitions
+    eventTypes       String // Types of events handled (wedding, supra, corporate, etc.)
     savedBy         UserSavedTamada[] // Users who saved this Tamada
     meetingBookings MeetingBooking[] // Bookings for this Tamada
     createdAt       DateTime @default(now())
@@ -62,7 +59,6 @@ model Tamada {
 
     @@index([name, drinks])
     @@index([price])
-    @@index([features])
     @@index([language])
     @@index([city])
     @@index([stomachSize])

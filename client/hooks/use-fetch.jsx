@@ -2,11 +2,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const useFetch = (cb) => {
+  
   const [data, setData] = useState(undefined);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
 
   const fn = async (...args) => {
+    console.log("🔥 useFetch - fn called with args:", args)
     setLoading(true);
     setError(null);
 

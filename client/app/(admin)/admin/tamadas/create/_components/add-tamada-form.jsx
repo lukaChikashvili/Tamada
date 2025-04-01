@@ -25,6 +25,8 @@ const AddTamadaForm = () => {
     const nationality = ["ქართველი", "სომეხი", "რუსი", "სხვა"];
     const clothingStyle = ["ჩვეულებრივი", "შარვალ-კოსტუმი", "ჩოხა-ახალუხი", "ტიტველი"];
     const rating = ["ცნობილი", "ძაან ცნობილი", "მეტ-ნაკლებად ცნობილი", "კაციშვილი არ იცნობს", "ეგი ვინაა სიმონ?"];
+    const eventTypes = ["ქელეხი", "ქორწილი", "დაბადების დღე", "ბოლო ზარი", "უბრალო შეკრება"];
+
 
     const [imageError, setImageError] = useState("");
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -50,8 +52,8 @@ const AddTamadaForm = () => {
         nationality: z.string().min(1, "Nationality is required"),
         experienceYears: z.number().min(1, "Experience years are required"),
         clothingStyle: z.string().min(1, "Clothing style is required"), 
-        popularityScore: z.number().min(0).max(100, "Popularity score should be between 0 and 100"),
-        eventTypes: z.array(z.string()).min(1, "At least one event type is required"),  
+        popularityScore: z.string().min(0).max(100, "Popularity score should be between 0 and 100"),
+        eventTypes: z.string(z.string()).min(1, "At least one event type is required"),  
         alcoholTolerance: z.number().min(1).max(10, "Alcohol tolerance should be between 1 and 10"),
         awards: z.array(z.string()).optional(),  
         
@@ -129,29 +131,8 @@ const AddTamadaForm = () => {
 
       // submit form
       const onSubmit = async (data) => {
-        if(uploadedImages.length === 0) {
-            setImageError("ატვირთეთ ერთი ან მეტი სურათი");
-            return;
-        }
-
-        const tamadaData = {
-            ...data,
-            year: parseInt(data.year),
-            price: parseFloat(data.price),
-            humorLevel: parseInt(data.humorLevel),
-
-           
-
-        };
-
-        const response = await addTamadafn({
-            tamadaData,
-            images: uploadedImages
-        })
-
-        console.log(response)
-
-
+        console.log("🔥 onSubmit called with:", data);
+          await fn(data)
 
       }
 
@@ -296,6 +277,65 @@ const AddTamadaForm = () => {
                     )}
                   </div>
 
+                        {/* humorlevel */}
+                        <div className="space-y-2">
+                    <Label htmlFor="humorLevel">იუმორის დონე</Label>
+                    <Input
+                      id="humorLevel"
+                      {...register("humorLevel", { valueAsNumber: true })}
+                      placeholder="e.g. 8"
+                      className={errors.humorLevel ? "border-red-500" : ""}
+                    />
+                    {errors.humorLevel && (
+                      <p className="text-xs text-red-500">
+                        {errors.humorLevel.message}
+                      </p>
+                    )}
+                  </div>
+
+
+                   {/* speechQuality */}
+                   <div className="space-y-2">
+                    <Label htmlFor="speechQuality">საუბრის ხარისხი</Label>
+                    <Input
+                      id="speechQuality"
+                      {...register("speechQuality", { valueAsNumber: true })}
+                      placeholder="e.g. 3"
+                      className={errors.speechQuality ? "border-red-500" : ""}
+                    />
+                    {errors.speechQuality && (
+                      <p className="text-xs text-red-500">
+                        {errors.speechQuality.message}
+                      </p>
+                    )}
+                  </div>
+
+
+                        {/* experienceYears */}
+                        <div className="space-y-2">
+                    <Label htmlFor="experienceYears">გამოცდილება</Label>
+                    <Input
+                      id="experienceYears"
+                      {...register("experienceYears", { valueAsNumber: true })}
+                      placeholder="e.g. 3"
+                      className={errors.experienceYears ? "border-red-500" : ""}
+                    />
+                    {errors.experienceYears && (
+                      <p className="text-xs text-red-500">
+                        {errors.experienceYears.message}
+                      </p>
+                    )}
+                  </div>
+
+
+
+
+
+
+
+
+
+
                   {/* language */}
                   <div className="space-y-2">
                     <Label htmlFor="language">სასაუბრო ენა</Label>
@@ -399,8 +439,44 @@ const AddTamadaForm = () => {
                           })}
                       </SelectContent>
                     </Select>
+                    {errors.popularityScore && (
+                      <p className="text-xs text-red-500">
+                        {errors.popularityScore.message}
+                      </p>
+                    )}
                   </div>
                 </div>
+
+
+                {/* eventType */}
+                <div className="space-y-2">
+                    <Label htmlFor="eventType">ივენთის ტიპი</Label>
+                    <Select
+                      onValueChange={(value) => setValue("eventType", value)}
+                      defaultValue={getValues("eventType")}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="ჩაწერეთ ტიპი" />
+                      </SelectTrigger>
+                      <SelectContent>
+                      {eventTypes.map((type) => {
+                            return (
+                                <SelectItem key = {type} value = {type}>
+                                 {type}
+                                </SelectItem>
+                            )
+                          })}
+                      </SelectContent>
+                    </Select>
+                    {errors.eventTypes && (
+                      <p className="text-xs text-red-500">
+                        {errors.eventTypes.message}
+                      </p>
+                    )}
+                  </div>
+                
+
+
 
                 {/* Description */}
                 <div className="space-y-2">
@@ -511,10 +587,12 @@ const AddTamadaForm = () => {
                 
                   </div>
 
-                  <Button
+                  <Button 
                   type="submit"
                   className="w-full md:w-auto"
                   disabled={addTamadaLoading}
+                  
+                  
                   
                 >
                   {addTamadaLoading ? (

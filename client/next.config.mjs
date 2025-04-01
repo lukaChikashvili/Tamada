@@ -22,6 +22,11 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'tsiskvili.ge',
+              },
+
+              {
+                protocol: 'https',
+                hostname: 'kwhwuapwfbfrepzfxkeu.supabase.co'
               }
           ],      },
 };

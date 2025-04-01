@@ -169,6 +169,8 @@ export async function addTamada({tamadaData, images}) {
         contentType: `image/${fileExtension}`,
       });
 
+      console.log("Image upload response:", data, error);
+
     if (error) {
       console.error("Error uploading image:", error);
       throw new Error(`Failed to upload image: ${error.message}`);
