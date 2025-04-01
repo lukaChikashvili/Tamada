@@ -124,8 +124,8 @@ export async function processTamadaImageWithAi(file) {
 
 
 
-export async function addTamada({tamadaData, images}) {
-    
+export async function AddTamadaToDb({tamadaData, images}) {
+  
     try { 
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
@@ -198,7 +198,6 @@ export async function addTamada({tamadaData, images}) {
           city: tamadaData.city, // City where the Tamada is based
           language: tamadaData.language, // Languages spoken
           stomachSize: tamadaData.stomachSize, // Stomach size (small, medium, large)
-          features: tamadaData.features, // Unique features
           description: tamadaData.description, // Short bio or listing description
           images: imageUrls, // List of images
           humorLevel: tamadaData.humorLevel, // Humor level (1-10)
@@ -208,15 +207,13 @@ export async function addTamada({tamadaData, images}) {
           clothingStyle: tamadaData.clothingStyle, // Traditional, modern, mixed
           popularityScore: tamadaData.popularityScore ?? 0, // Popularity rating (0-100)
           eventTypes: tamadaData.eventTypes, // Types of events handled
-          alcoholTolerance: tamadaData.alcoholTolerance, // Alcohol tolerance (1-10)
-          awards: tamadaData.awards, // Awards received
           createdAt: new Date(), // Timestamp for creation
         }
       });
 
       revalidatePath('/admin/tamadas');
 
-      console.log(tamada)
+      console.log(tamada.data)
 
       return {
         success: true,

@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import useFetch from '@/hooks/use-fetch';
-import { addTamada } from '@/actions/tamadas';
+import { AddTamadaToDb, addTamada } from '@/actions/tamadas';
 import { useRouter } from 'next/navigation';
 
 const AddTamadaForm = () => {
@@ -44,8 +44,7 @@ const AddTamadaForm = () => {
         drinks: z.number().min(1, "ჭიქები აუცილებელია"),
         city: z.string().min(1, "ქალაქი აუცილებელია"),
         language: z.string().min(1, "ენა აუცილებელია"),
-        stomachSize: z.number().min(1, "ღიპის ზომა აუცილებელია"),
-        features: z.string().optional(),  
+        stomachSize: z.number().min(1, "ღიპის ზომა აუცილებელია"), 
         description: z.string().optional(), 
         humorLevel: z.number().min(1).max(10, "Humor level should be between 1 and 10").optional(),
         speechQuality: z.number().min(1).max(10, "Speech quality should be between 1 and 10"),
@@ -55,7 +54,8 @@ const AddTamadaForm = () => {
         popularityScore: z.string().min(0).max(100, "Popularity score should be between 0 and 100"),
         eventTypes: z.string(z.string()).min(1, "At least one event type is required"),  
         alcoholTolerance: z.number().min(1).max(10, "Alcohol tolerance should be between 1 and 10"),
-        awards: z.array(z.string()).optional(),  
+        awards: z.array(z.string()).optional(),
+        featured: z.boolean().default(false),  
         
 
 
@@ -119,7 +119,7 @@ const AddTamadaForm = () => {
         loading: addTamadaLoading,
         fn: addTamadafn,
         data: addTamadaResult,
-      } = useFetch(addTamada);
+      } = useFetch(AddTamadaToDb);
 
       useEffect(() => {
         if (addTamadaResult?.success) {
@@ -128,13 +128,8 @@ const AddTamadaForm = () => {
         }
       }, [addTamadaResult, router]);
 
+      
 
-      // submit form
-      const onSubmit = async (data) => {
-        console.log("🔥 onSubmit called with:", data);
-          await fn(data)
-
-      }
 
 
     const {
@@ -148,7 +143,23 @@ const AddTamadaForm = () => {
         resolver: zodResolver(tamadaFormSchema)
 
 
-    })
+    });
+
+
+    
+
+      // submit form
+      const onSubmit = async (data) => {
+        if (uploadedImages.length === 0) {
+          setImageError("Please upload at least one image");
+          return;
+        }
+
+        
+          console.log("🔥 onSubmit triggered with:", data);
+
+
+      }
 
     const [activeTab, setActiveTab] = useState("ai");
 
@@ -179,7 +190,7 @@ const AddTamadaForm = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)}  className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* name */}
                   <div className="space-y-2">
@@ -450,10 +461,10 @@ const AddTamadaForm = () => {
 
                 {/* eventType */}
                 <div className="space-y-2">
-                    <Label htmlFor="eventType">ივენთის ტიპი</Label>
+                    <Label htmlFor="eventTypes">ივენთის ტიპი</Label>
                     <Select
-                      onValueChange={(value) => setValue("eventType", value)}
-                      defaultValue={getValues("eventType")}
+                      onValueChange={(value) => setValue("eventTypes", value)}
+                      defaultValue={getValues("eventTypes")}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="ჩაწერეთ ტიპი" />
@@ -587,10 +598,11 @@ const AddTamadaForm = () => {
                 
                   </div>
 
-                  <Button 
+                  <button 
                   type="submit"
-                  className="w-full md:w-auto"
-                  disabled={addTamadaLoading}
+                  
+                  className="w-full md:w-auto cursor-pointer"
+                  //disabled={addTamadaLoading}
                   
                   
                   
@@ -603,7 +615,7 @@ const AddTamadaForm = () => {
                   ) : (
                     "დაამატე თამადა"
                   )}
-                </Button>
+                </button>
 
               </form>
             </CardContent>

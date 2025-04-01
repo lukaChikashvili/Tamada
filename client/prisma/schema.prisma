@@ -46,6 +46,7 @@ model Tamada {
     description      String // Short bio or listing description
     images          String[] // List of images of the Tamada
     humorLevel       Int // Humor rating (1-10)
+    featured          Boolean            @default(false)
     speechQuality    Int // Eloquence rating (1-10)
     nationality      String // Tamada's nationality
     experienceYears  Int // Number of years as a Tamada
