@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger
 import { Filter, Sliders, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback } from 'react';
+import { TamadaFilterControls } from "./TamadaFilterControls";
 
 const TamadaFilters = ({ filters }) => {
   const router = useRouter();
@@ -21,12 +22,12 @@ const TamadaFilters = ({ filters }) => {
   const currentMaxPrice = searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")) : filters.priceRange.max;
   const currentSortBy = searchParams.get("sortBy") || "newest";
 
-  // ✅ Add useState for priceRange
+  
   const [name, setName] = useState(currentName);
   const [city, setCity] = useState(currentCity);
   const [language, setLanguage] = useState(currentLanguage);
-  const [stomach, setStomach] = useState(currentStomachSize);
-  const [priceRange, setPriceRange] = useState([currentMinPrice, currentMaxPrice]); // ✅ Now priceRange is defined
+  const [stomachSize, setStomachSize] = useState(currentStomachSize);
+  const [priceRange, setPriceRange] = useState([currentMinPrice, currentMaxPrice]); 
   const [sortBy, setSortBy] = useState(currentSortBy);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -34,7 +35,7 @@ const TamadaFilters = ({ filters }) => {
     setName(currentName);
     setCity(currentCity);
     setLanguage(currentLanguage);
-    setStomach(currentStomachSize);
+    setStomachSize(currentStomachSize);
     setPriceRange([currentMinPrice, currentMaxPrice]);
     setSortBy(currentSortBy);
   }, [
@@ -51,7 +52,7 @@ const TamadaFilters = ({ filters }) => {
     name,
     city,
     language,
-    stomach,
+    stomachSize,
     currentMinPrice > filters.priceRange.min || currentMaxPrice < filters.priceRange.max,
   ].filter(Boolean).length;
 
@@ -61,7 +62,7 @@ const TamadaFilters = ({ filters }) => {
     if (name) params.set("name", name);
     if (language) params.set("language", language);
     if (city) params.set("city", city);
-    if (stomach) params.set("stomachSize", stomach);
+    if (stomachSize) params.set("stomachSize", stomachSize);
     if (priceRange[0] > filters.priceRange.min) params.set("minPrice", priceRange[0].toString());
     if (priceRange[1] < filters.priceRange.max) params.set("maxPrice", priceRange[1].toString());
     if (sortBy !== "newest") params.set("sortBy", sortBy);
@@ -76,7 +77,20 @@ const TamadaFilters = ({ filters }) => {
 
     router.push(url);
     setIsSheetOpen(false);
-  }, [name, city, language, stomach, priceRange, sortBy, pathname, searchParams, filters.priceRange.min, filters.priceRange.max]);
+  }, [name, city, language, stomachSize, priceRange, sortBy, pathname, searchParams, filters.priceRange.min, filters.priceRange.max]);
+
+
+  const currentFilters = {
+    name,
+    city,
+    language,
+    stomachSize,
+    priceRange,
+    priceRangeMin: filters.priceRange.min,
+    priceRangeMax: filters.priceRange.max,
+  };
+
+
 
   return (
     <div>
@@ -102,7 +116,12 @@ const TamadaFilters = ({ filters }) => {
                 </SheetHeader>
 
                 <div className="py-6">
-                  {/* Replace CarFilterControls with your filter components */}
+                  <TamadaFilterControls
+                  filters={filters}
+                  currentFilters={currentFilters}
+                  //onFilterChange={handleFilterChange}
+                  //onClearFilter={handleClearFilter}
+                   />
                 </div>
 
                 <SheetFooter className="sm:justify-between flex-row pt-2 border-t space-x-4 mt-auto">
@@ -152,7 +171,12 @@ const TamadaFilters = ({ filters }) => {
             </div>
 
             <div className="p-4">
-              {/* Replace CarFilterControls with your filter components */}
+            <TamadaFilterControls
+                  filters={filters}
+                  currentFilters={currentFilters}
+                  //onFilterChange={handleFilterChange}
+                  //onClearFilter={handleClearFilter}
+                   />
             </div>
 
             <div className="px-4 py-4 border-t">
