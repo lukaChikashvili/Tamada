@@ -90,6 +90,30 @@ const TamadaFilters = ({ filters }) => {
     priceRangeMax: filters.priceRange.max,
   };
 
+  const handleFilterChange = (filterName, value) => {
+    switch (filterName) {
+      case "name":
+        setName(value);
+        break;
+      case "city":
+        setCity(value);
+        break;
+      case "language":
+        setLanguage(value);
+        break;
+      case "stomachSize":
+        setStomachSize(value);
+        break;
+      case "priceRange":
+        setPriceRange(value);
+        break;
+    }
+  };
+
+  const handleClearFilter = (filterName) => {
+    handleFilterChange(filterName, "");
+  };
+
 
 
   return (
@@ -119,8 +143,8 @@ const TamadaFilters = ({ filters }) => {
                   <TamadaFilterControls
                   filters={filters}
                   currentFilters={currentFilters}
-                  //onFilterChange={handleFilterChange}
-                  //onClearFilter={handleClearFilter}
+                  onFilterChange={handleFilterChange}
+                  onClearFilter={handleClearFilter}
                    />
                 </div>
 
@@ -160,12 +184,12 @@ const TamadaFilters = ({ filters }) => {
             <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
               <h3 className="font-medium flex items-center">
                 <Sliders className="mr-2 h-4 w-4" />
-                Filters
+                ფილტრები
               </h3>
               {activeFilterCount > 0 && (
                 <Button variant="ghost" size="sm" className="h-8 text-sm text-gray-600">
                   <X className="mr-1 h-3 w-3" />
-                  Clear All
+                  გაასუფთავე ყველა
                 </Button>
               )}
             </div>
@@ -174,14 +198,14 @@ const TamadaFilters = ({ filters }) => {
             <TamadaFilterControls
                   filters={filters}
                   currentFilters={currentFilters}
-                  //onFilterChange={handleFilterChange}
-                  //onClearFilter={handleClearFilter}
+                  onFilterChange={handleFilterChange}
+                  onClearFilter={handleClearFilter}
                    />
             </div>
 
             <div className="px-4 py-4 border-t">
-              <Button onClick={applyFilters} className="w-full">
-                Apply Filters
+              <Button variant="destructive" onClick={applyFilters} className="w-full">
+                ძებნა
               </Button>
             </div>
           </div>

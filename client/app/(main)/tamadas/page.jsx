@@ -15,7 +15,7 @@ const TamadasPage = async () => {
 
       
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-12 py-12">
       <h1 className="text-4xl mb-4 gradient-title font-bold text-red-500">მოძებნე თამადები</h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
