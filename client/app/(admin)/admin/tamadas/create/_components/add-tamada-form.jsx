@@ -11,12 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useDropzone } from 'react-dropzone/';
-import { Loader2, Upload, X } from 'lucide-react';
+import { Camera, Loader2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import useFetch from '@/hooks/use-fetch';
-import { AddTamadaToDb } from '@/actions/tamadas';
+import { AddTamadaToDb, processTamadaImageWithAi } from '@/actions/tamadas';
 import { useRouter } from 'next/navigation';
 
 const AddTamadaForm = () => {
@@ -31,6 +31,8 @@ const AddTamadaForm = () => {
     const [imageError, setImageError] = useState("");
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [uploadedAiImage, setUploadedAiImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     const router = useRouter();
     
@@ -126,9 +128,52 @@ const AddTamadaForm = () => {
         }
       }, [addTamadaResult, router]);
 
+      const onAiDrop = useCallback((acceptedFiles) => {
+        const file = acceptedFiles[0];
+        if (!file) return;
+    
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error("Image size should be less than 5MB");
+          return;
+        }
+    
+        setUploadedAiImage(file);
+    
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setImagePreview(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }, []);
+
       
+      const { getRootProps: getAiRootProps, getInputProps: getAiInputProps } =
+      useDropzone({
+        onDrop: onAiDrop,
+        accept: {
+          "image/*": [".jpeg", ".jpg", ".png", ".webp"],
+        },
+        maxFiles: 1,
+        multiple: false,
+      });
 
+      const {
+        loading: processImageLoading,
+        fn: processImageFn,
+        data: processImageResult,
+        error: processImageError,
+      } = useFetch(processTamadaImageWithAi);
+    
+      const processWithAI = async () => {
+        if (!uploadedAiImage) {
+          toast.error("Please upload an image first");
+          return;
+        }
+    
+        await processImageFn(uploadedAiImage);
+      };
 
+      
 
     const {
         register,
@@ -614,7 +659,7 @@ const AddTamadaForm = () => {
                   type="submit"
                   
                   className="w-full md:w-auto cursor-pointer"
-                  //disabled={addTamadaLoading}
+                  disabled={addTamadaLoading}
                   
                   
                   
@@ -633,6 +678,120 @@ const AddTamadaForm = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+
+
+        <TabsContent value="ai" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>ხელოვნური ინტელექტის დახმარება</CardTitle>
+              <CardDescription>
+                ატვირთე თამადის სურათი და AI თავად გამოიტანს დეტალებს
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+               <div className='space-y-6'>
+               <div className="border-2 border-dashed rounded-lg p-6 text-center">
+                  {imagePreview ? (
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={imagePreview}
+                        alt="Tamada preview"
+                        className="max-h-56 max-w-full object-contain mb-4"
+                      />
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setImagePreview(null);
+                            setUploadedAiImage(null);
+                          }}
+                        >
+                          წაშლა
+                        </Button>
+                        <Button
+                          onClick={processWithAI}
+                          disabled={processImageLoading}
+                          size="sm"
+                          variant = "destructive"
+                           className="cursor-pointer shadow-lg"
+                        >
+                          {processImageLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              დამუშავება...
+                            </>
+                          ) : (
+                            <>
+                              <Camera className="mr-2 h-4 w-4" />
+                              დეტალების გამოტანა
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      {...getAiRootProps()}
+                      className="cursor-pointer hover:bg-gray-50 transition"
+                    >
+                      <input {...getAiInputProps()} />
+                      <div className="flex flex-col items-center justify-center">
+                        <Camera className="h-12 w-12 text-gray-400 mb-3" />
+                        <span className="text-sm text-gray-600">
+                          Drag & drop or click to upload a car image
+                        </span>
+                        <span className="text-xs text-gray-500 mt-1">
+                          (JPG, PNG, WebP, max 5MB)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {processImageLoading && (
+                  <div className="bg-blue-50 text-blue-700 p-4 rounded-md flex items-center">
+                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                    <div>
+                      <p className="font-medium">სურათის ანალიზი...</p>
+                      <p className="text-sm">
+                        ხელოვნური ინტელექტი იღებს ინფორმაციას...
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+               
+
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <h3 className="font-medium mb-2">როგორ მუშაობს</h3>
+                  <ol className="space-y-2 text-sm text-gray-600 list-decimal pl-4">
+                    <li>ატვირთე ნათელი თამადის სურათი</li>
+                    <li>დააჭირეთ "დეტალებს" რომ გამოიყენოთ AI</li>
+                    <li>გადახედე ინფორმაციას</li>
+                    <li>შეავსე გამოტოვებული დეტალები მანუალურად</li>
+                    <li>დაამატე თამადა</li>
+                  </ol>
+                </div>
+
+                <div className="bg-amber-50 p-4 rounded-md">
+                  <h3 className="font-medium text-amber-800 mb-1">
+                    რჩევები საუკეთესო შედეგისთვის
+                  </h3>
+                  <ul className="space-y-1 text-sm text-amber-700">
+                    <li>• გამოიყენე ნათელი სურათები</li>
+                    <li>• ცადე რომ გამოაჩინო მთელი სხეული</li>
+                    <li>• რთული სახისთვის გამოიყენე სხვადასხვა რაკურსი</li>
+                    <li>• ყოველთვის გადაამოწმე ინფორმაცია</li>
+                  </ul>
+                </div>
+            
+               </div>
+            </CardContent>
+            </Card>
+
+            </TabsContent >
 
         </Tabs>
     </div>
