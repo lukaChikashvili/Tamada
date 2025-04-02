@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const TamadaList = () => {
   const [search, setSearch] = useState("");
@@ -68,7 +69,7 @@ const TamadaList = () => {
   const handleDeleteTamada = async () => {
     if (!tamadaToDelete) return;
 
-    await deleteTamadaFn(carToDelete.id);
+    await deleteTamadaFn(tamadaToDelete.id);
     setDeleteDialogOpen(false);
     setTamadaToDelete(null);
   };
@@ -215,6 +216,42 @@ const TamadaList = () => {
           )}
         </CardContent>
       </Card>
+
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>დაადასტურე წაშლა</DialogTitle>
+            <DialogDescription>
+              ნამდვილად გინდა წაშალო {tamadaToDelete?.name}{" "}
+              {tamadaToDelete?.city} ({tamadaToDelete?.year})? ამ მოქმედებას უკან ვერ დააბრუნებ.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deletingTamada}
+            >
+              გაუქმება
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteTamada}
+              disabled={deletingTamada}
+            >
+              {deletingTamada ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  იშლება...
+                </>
+              ) : (
+                "წაშალე თამადა"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
