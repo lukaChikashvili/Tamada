@@ -1,16 +1,18 @@
+import { getFeaturedTamadas } from "@/actions/home";
 import HomeSearch from "@/components/HomeSearch";
 import TamadaCard from "@/components/TamadaCard";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { faqData } from "@/public/faq";
 import { restaurants } from "@/public/restaurants";
-import { tamadas } from "@/public/tamadas";
 import { SignedOut } from "@clerk/nextjs";
 import {  ChevronRight, Wine } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+
+  const featuredTamadas = await getFeaturedTamadas();
   return (
     <main className="px-12">
       <section className="relative py-16 md:py-28 texture ">
@@ -36,7 +38,7 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row items-center gap-12">
 
-          {tamadas.map((value) => (
+          {featuredTamadas.map((value) => (
             <TamadaCard key = {value.id} value = {value}/>
           ))}
           </div>
