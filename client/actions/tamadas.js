@@ -1,4 +1,5 @@
 "use server"
+import { serializeTamadaData } from "@/lib/helpers";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
@@ -239,9 +240,87 @@ export async function getTamada(search = "") {
       const tamadas = await db.tamada.findMany({
         where,
         orderBy: {createdAt: 'desc'}
-      })
+      });
+
+      const serializedTamadas = tamadas.map(serializeTamadaData);
+
+      return {
+        success: true,
+        data: serializedTamadas
+      }
+
     }
    } catch (error) {
-    
+       console.log(error)
    }
+}
+
+
+
+export async function deleteTamada(id) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    
+    const tamada = await db.tamada.findUnique({
+      where: { id },
+      select: { images: true },
+    });
+
+    if (!tamada) {
+      return {
+        success: false,
+        error: "tamada not found",
+      };
+    }
+
+    
+    await db.tamada.delete({
+      where: { id },
+    });
+
+
+    try {
+      const cookieStore = cookies();
+      const supabase = createClient(cookieStore);
+
+     
+      const filePaths = tamada.images
+        .map((imageUrl) => {
+          const url = new URL(imageUrl);
+          const pathMatch = url.pathname.match(/\/tamada-img\/(.*)/);
+          return pathMatch ? pathMatch[1] : null;
+        })
+        .filter(Boolean);
+
+      
+      if (filePaths.length > 0) {
+        const { error } = await supabase.storage
+          .from("tamada-img")
+          .remove(filePaths);
+
+        if (error) {
+          console.error("Error deleting images:", error);
+         
+        }
+      }
+    } catch (storageError) {
+      console.error("Error with storage operations:", storageError);
+      
+    }
+
+  
+    revalidatePath("/admin/tamadas");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error deleting tamada:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
 }
