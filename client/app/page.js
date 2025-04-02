@@ -33,7 +33,9 @@ export default async function Home() {
         <div>
           <div className="flex items-center justify-between">
             <h2 className="border-b py-8 text-3xl text-slate-800 font-extrabold">ცნობილი თამადები</h2>
+            <Link href = "/tamadas">
             <Button variant="ghost" className="cursor-pointer">ყველას ნახვა <ChevronRight /></Button>
+            </Link>
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-12">
@@ -50,7 +52,9 @@ export default async function Home() {
         <div>
           <div className="flex items-center justify-between">
             <h2 className="border-b py-8 text-3xl text-slate-800 font-extrabold">მოძებნე რესტორანით</h2>
-            <Button variant="ghost" className="cursor-pointer">ყველას ნახვა <ChevronRight /></Button>
+          <Link href = "/tamadas">
+          <Button  variant="ghost" className="cursor-pointer" >ყველას ნახვა <ChevronRight /></Button>
+          </Link>  
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-12 ">
