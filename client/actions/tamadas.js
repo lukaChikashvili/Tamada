@@ -211,3 +211,37 @@ export async function AddTamadaToDb({tamadaDatato, images}) {
         throw new Error("Error adding car:" + error.message);
     }
 }
+
+
+
+export async function getTamada(search = "") {
+   try {
+    const { userId } = await auth();
+    
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) throw new Error("User not found");
+
+
+    let where = {};
+
+    if(search) {
+      where.OR = [
+        { name: {contains: search, mode: 'insensitive'}},
+        { price: {contains: search, mode: 'insensitive'}},
+        { language: {contains: search, mode: 'insensitive'}},
+      ];
+
+      const tamadas = await db.tamada.findMany({
+        where,
+        orderBy: {createdAt: 'desc'}
+      })
+    }
+   } catch (error) {
+    
+   }
+}
