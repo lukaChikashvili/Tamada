@@ -216,9 +216,9 @@ export async function AddTamadaToDb({tamadaDatato, images}) {
 
 
 export async function getTamada(search = "") {
-   try {
+  try {
     const { userId } = await auth();
-    
+
     if (!userId) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
@@ -227,34 +227,38 @@ export async function getTamada(search = "") {
 
     if (!user) throw new Error("User not found");
 
-
     let where = {};
 
-    if(search) {
+    if (search) {
       where.OR = [
-        { name: {contains: search, mode: 'insensitive'}},
-        { price: {contains: search, mode: 'insensitive'}},
-        { language: {contains: search, mode: 'insensitive'}},
+        { name: { contains: search, mode: "insensitive" } },
+        { language: { contains: search, mode: "insensitive" } },
       ];
 
-      const tamadas = await db.tamada.findMany({
-        where,
-        orderBy: {createdAt: 'desc'}
-      });
-
-      const serializedTamadas = tamadas.map(serializeTamadaData);
-
-      return {
-        success: true,
-        data: serializedTamadas
+     
+      const searchNumber = Number(search);
+      if (!isNaN(searchNumber)) {
+        where.OR.push({ price: searchNumber });
       }
-
     }
-   } catch (error) {
-       console.log(error)
-   }
-}
 
+    
+    const tamadas = await db.tamada.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const serializedTamadas = tamadas.map(serializeTamadaData);
+
+    return {
+      success: true,
+      data: serializedTamadas,
+    };
+  } catch (error) {
+    console.error("Error fetching tamadas:", error);
+    return { success: false, data: [] };
+  }
+}
 
 
 export async function deleteTamada(id) {
@@ -267,6 +271,8 @@ export async function deleteTamada(id) {
       where: { id },
       select: { images: true },
     });
+
+    
 
     if (!tamada) {
       return {
