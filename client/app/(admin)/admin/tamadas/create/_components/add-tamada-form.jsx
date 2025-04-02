@@ -173,7 +173,17 @@ const AddTamadaForm = () => {
         await processImageFn(uploadedAiImage);
       };
 
+
+      useEffect(() => {
+        if (processImageError) {
+          toast.error(processImageError.message || "Failed to upload car");
+        }
+      }, [processImageError]);
       
+
+    
+    
+
 
     const {
         register,
@@ -218,6 +228,42 @@ const AddTamadaForm = () => {
         setUploadedImages((prev) => prev.filter((_, i) => i !== index));
       };
 
+
+      
+      useEffect(() => {
+        if (processImageResult?.success) {
+            const tamadaDetails = processImageResult.data;
+    
+            setValue("name", tamadaDetails.name);
+            setValue("year", tamadaDetails.year);
+            setValue("price", tamadaDetails.price);
+            setValue("drinks", tamadaDetails.drinks);
+            setValue("city", tamadaDetails.city);
+            setValue("language", tamadaDetails.language);
+            setValue("stomachSize", tamadaDetails.stomachSize);
+            setValue("description", tamadaDetails.description);
+            setValue("humorLevel", tamadaDetails.humorLevel);
+            setValue("speechQuality", tamadaDetails.speechQuality);
+            setValue("nationality", tamadaDetails.nationality);
+            setValue("experienceYears", tamadaDetails.experienceYears);
+            setValue("clothingStyle", tamadaDetails.clothingStyle);
+            setValue("popularityScore", tamadaDetails.popularityScore);
+            setValue("eventTypes", tamadaDetails.eventTypes);
+    
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setUploadedImages((prev) => [...prev, e.target.result]);
+            };
+            reader.readAsDataURL(uploadedAiImage);
+    
+            toast.success("წარმატებით გამოვიდა დეტალები", {
+                description: `Detected ${tamadaDetails.year} ${tamadaDetails.city} ${tamadaDetails.clothingStyle} with ${Math.round(tamadaDetails.confidence * 100)}% confidence`,
+            });
+    
+            setActiveTab("manual");
+        }
+    }, [processImageResult, setValue, uploadedAiImage]);
+    
 
   return (
     <div>

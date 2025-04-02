@@ -3,6 +3,9 @@ const nextConfig = {
   experimental: {
     serverComponentsHmrCache: false, 
   },
+  serverActions: {
+    bodySizeLimit: '10mb', 
+  },
     images: {
         domains: ["cdn.gencraft.com"],
         remotePatterns: [
