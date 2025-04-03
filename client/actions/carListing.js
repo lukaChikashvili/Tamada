@@ -322,3 +322,85 @@ export async function getSavedTamadas() {
     };
   }
 }
+
+
+
+export async function getTamadaById(tamadaId) {
+  try {
+    
+    const { userId } = await auth();
+    let dbUser = null;
+
+    if (userId) {
+      dbUser = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+    }
+
+   
+    const tamada = await db.tamada.findUnique({
+      where: { id: tamadaId },
+    });
+
+    if (!tamada) {
+      return {
+        success: false,
+        error: "Tamada not found",
+      };
+    }
+
+    
+    let isWishlisted = false;
+    if (dbUser) {
+      const savedTamada = await db.userSavedTamada.findUnique({
+        where: {
+          userId_tamadaId: {
+            userId: dbUser.id,
+            tamadaId,
+          },
+        },
+      });
+
+      isWishlisted = !!savedTamada;
+    }
+
+    
+    const existingMeeting = await db.meetingBooking.findFirst({
+      where: {
+        tamadaId,
+        userId: dbUser.id,
+        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    let userMeeting = null;
+
+    if (existingMeeting) {
+      userMeeting = {
+        id: existingMeeting.id,
+        status: existingMeeting.status,
+        bookingDate: existingMeeting.bookingDate.toISOString(),
+      };
+    }
+
+    
+   
+    return {
+      success: true,
+      data: {
+        ...serializeTamadaData(tamada, isWishlisted),
+        testDriveInfo: {
+          userMeeting,
+         
+          
+        
+        },
+      },
+    };
+  } catch (error) {
+    throw new Error("Error fetching car details:" + error.message);
+  }
+}
