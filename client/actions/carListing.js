@@ -200,3 +200,75 @@ export async function getTamadas({
     }
 
 }
+
+
+export async function toggleSavedTamada(tamadaId) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    
+    const tamada = await db.tamada.findUnique({
+      where: { id: tamadaId },
+    });
+
+    if (!tamada) {
+      return {
+        success: false,
+        error: "Tamada not found",
+      };
+    }
+
+    
+    const existingSave = await db.userSavedTamada.findUnique({
+      where: {
+        userId_tamadaId: {
+          userId: user.id,
+          tamadaId,
+        },
+      },
+    });
+
+    
+    if (existingSave) {
+      await db.userSavedTamada.delete({
+        where: {
+          userId_tamadaId: {
+            userId: user.id,
+            tamadaId,
+          },
+        },
+      });
+
+      revalidatePath(`/saved-tamadas`);
+      return {
+        success: true,
+        saved: false,
+        message: "tamada removed from favorites",
+      };
+    }
+
+    
+    await db.userSavedTamada.create({
+      data: {
+        userId: user.id,
+        tamadaId,
+      },
+    });
+
+    revalidatePath(`/saved-tamadas`);
+    return {
+      success: true,
+      saved: true,
+      message: "tamadas added to favorites",
+    };
+  } catch (error) {
+    throw new Error("Error toggling saved car:" + error.message);
+  }
+}
