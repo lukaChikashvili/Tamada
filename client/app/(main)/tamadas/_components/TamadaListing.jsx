@@ -107,13 +107,12 @@ const TamadaListing = () => {
         <div className="bg-gray-100 p-4 rounded-full mb-4">
           <Info className="h-8 w-8 text-gray-500" />
         </div>
-        <h3 className="text-lg font-medium mb-2">No cars found</h3>
+        <h3 className="text-lg font-medium mb-2">თამადა ვერ მოიძებნა</h3>
         <p className="text-gray-500 mb-6 max-w-md">
-          We couldn't find any cars matching your search criteria. Try adjusting
-          your filters or search term.
+          ვერ ვიპოვეთ ისეთი თამადა, რომელიც თქვენს მიერ აღწერილ თამადას მიესადაგება
         </p>
         <Button variant="outline" asChild>
-          <Link href="/cars">Clear all filters</Link>
+          <Link href="/tamadas">გაასუფთავე ყველა ფილტრი</Link>
         </Button>
       </div>
     );
