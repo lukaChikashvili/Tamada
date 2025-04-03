@@ -308,7 +308,7 @@ export async function getSavedTamadas() {
     });
 
     
-    const tamadas = savedTamadas.map((saved) => serializeCarData(saved.tamada));
+    const tamadas = savedTamadas.map((saved) => serializeTamadaData(saved.tamada));
 
     return {
       success: true,
