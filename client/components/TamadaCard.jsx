@@ -112,7 +112,9 @@ const TamadaCard = ({ value }) => {
       </CardContent>
 
       {/* Button */}
-      <Button className="cursor-pointer" variant="destructive">
+      <Button onClick={() => {
+              router.push(`/tamadas/${value.id}`);
+            }} className="cursor-pointer" variant="destructive">
         დეტალურად ნახვა
       </Button>
     </div>
