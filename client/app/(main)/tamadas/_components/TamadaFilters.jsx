@@ -126,7 +126,7 @@ const TamadaFilters = ({ filters }) => {
               <SheetTrigger asChild>
                 <Button variant="outline" className="flex items-center gap-2">
                   <Filter className="h-4 w-4" />
-                  Filters
+                  ფილტრები
                   {activeFilterCount > 0 && (
                     <Badge className="ml-1 h-5 w-5 rounded-full p-0 flex items-center justify-center">
                       {activeFilterCount}
@@ -136,7 +136,7 @@ const TamadaFilters = ({ filters }) => {
               </SheetTrigger>
               <SheetContent side="left" className="w-full sm:max-w-md overflow-y-auto">
                 <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
+                  <SheetTitle>ფილტრები</SheetTitle>
                 </SheetHeader>
 
                 <div className="py-6">
@@ -150,10 +150,10 @@ const TamadaFilters = ({ filters }) => {
 
                 <SheetFooter className="sm:justify-between flex-row pt-2 border-t space-x-4 mt-auto">
                   <Button type="button" variant="outline" className="flex-1">
-                    Reset
+                    რესეთი
                   </Button>
                   <Button type="button" className="flex-1">
-                    Show Results
+                    ძებნა
                   </Button>
                 </SheetFooter>
               </SheetContent>
@@ -167,9 +167,9 @@ const TamadaFilters = ({ filters }) => {
           </SelectTrigger>
           <SelectContent>
             {[
-              { value: "newest", label: "Newest First" },
-              { value: "priceAsc", label: "Price: Low to High" },
-              { value: "priceDesc", label: "Price: High to Low" },
+              { value: "newest", label: "უახლესი" },
+              { value: "priceAsc", label: "ფასი: ქვემოდან ზემოთ" },
+              { value: "priceDesc", label: "ფასი: ზემოდან ქვემოთ" },
             ].map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}

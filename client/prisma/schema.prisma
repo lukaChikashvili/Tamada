@@ -57,6 +57,7 @@ model Tamada {
     meetingBookings MeetingBooking[] // Bookings for this Tamada
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
+    status          String @default("AVAILABLE")
 
     @@index([name, drinks])
     @@index([price])

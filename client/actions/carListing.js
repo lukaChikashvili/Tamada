@@ -175,10 +175,10 @@ export async function getTamadas({
         success: true,
         data: serializedTamadas,
         pagination: {
-          total: totalCars,
+          total: totalTamadas,
           page,
           limit,
-          pages: Math.ceil(totalCars / limit),
+          pages: Math.ceil(totalTamadas / limit),
         },
       };
     

@@ -1,3 +1,5 @@
+"use client"
+
 import Image from 'next/image';
 import React from 'react';
 import { Button } from './ui/button';
@@ -10,11 +12,11 @@ const TamadaCard = ({ value }) => {
       
       {/* Image Section */}
       <div className="relative w-full h-[250px] rounded-md overflow-hidden group">
-        {value.images && value.images.length > 0 ? (
+        {value && value.images && value.images.length > 0 ? (
           <div className="relative w-full h-full">
             <Image
               src={value.images[0]}
-              alt={`${value.name} ${value.city}`}
+              alt={`${value?.name} ${value?.city}`}
               fill
               className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
             />
@@ -36,9 +38,9 @@ const TamadaCard = ({ value }) => {
 
       {/* Card Content */}
       <CardContent>
-        <h2 className="font-bold text-slate-800">{value.name}</h2>
-        <h1 className="font-bold text-red-500 text-2xl">{value.price}</h1>
-        <p>{value.birth} - {value.city}</p>
+        <h2 className="font-bold text-slate-800">{value?.name}</h2>
+        <h1 className="font-bold text-red-500 text-2xl">{value?.price}</h1>
+        <p>{value?.birth} - {value?.city}</p>
       </CardContent>
 
       {/* Button */}

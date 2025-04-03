@@ -77,7 +77,7 @@ export const TamadaFilterControls = ({
                 onClick={() => onClearFilter(section.id)}
               >
                 <X className="mr-1 h-3 w-3" />
-                Clear
+                გასუფთავება
               </button>
             )}
           </h4>

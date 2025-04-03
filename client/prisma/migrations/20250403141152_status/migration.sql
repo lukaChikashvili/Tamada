@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Tamada" ADD COLUMN     "status" TEXT NOT NULL DEFAULT 'AVAILABLE';
