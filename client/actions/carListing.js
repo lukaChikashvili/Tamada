@@ -104,6 +104,8 @@ export async function getTamadas({
     let where = {
         status: "AVAILABLE",
       };
+
+      console.log("Query Filters:", JSON.stringify(where, null, 2));
   
       if (search) {
         where.OR = [
@@ -154,6 +156,8 @@ export async function getTamadas({
         skip,
         orderBy,
       });
+
+      console.log(tamadas)
   
 
       let wishlisted = new Set();
@@ -171,6 +175,9 @@ export async function getTamadas({
         serializeTamadaData(tamada, wishlisted.has(tamada.id))
       );
   
+      
+
+   
       return {
         success: true,
         data: serializedTamadas,
@@ -181,10 +188,15 @@ export async function getTamadas({
           pages: Math.ceil(totalTamadas / limit),
         },
       };
+      
     
         
     } catch (error) {
-        
+      console.error("Error fetching Tamadas:", error);
+      return {
+          success: false,
+          message: "Failed to fetch tamadas",
+      };
     }
 
 }

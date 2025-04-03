@@ -98,6 +98,7 @@ const TamadaListing = () => {
 
   const { data: tamadas, pagination } = result;
 
+  
 
 
   if (tamadas.length === 0) {
@@ -181,18 +182,18 @@ const TamadaListing = () => {
   
     <div className="flex justify-between items-center mb-6">
       <p className="text-gray-600">
-        Showing{" "}
+        ნაჩვენებია{" "}
         <span className="font-medium">
           {(page - 1) * limit + 1}-{Math.min(page * limit, pagination.total)}
         </span>{" "}
-        of <span className="font-medium">{pagination.total}</span> cars
+        -  <span className="font-medium">{pagination.total}</span> თამადიდან
       </p>
     </div>
 
     
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {tamadas.map((tamada) => (
-        <TamadaCard key={tamada.id} tamada={tamada} />
+      {tamadas.map((value) => (
+        <TamadaCard key={value.id} value={value} />
       ))}
     </div>
 

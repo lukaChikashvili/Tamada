@@ -12,10 +12,10 @@ const TamadaCard = ({ value }) => {
       
       {/* Image Section */}
       <div className="relative w-full h-[250px] rounded-md overflow-hidden group">
-        {value && value.images && value.images.length > 0 ? (
+        {value && value?.images && value.images?.length > 0 ? (
           <div className="relative w-full h-full">
             <Image
-              src={value.images[0]}
+              src={value?.images[0]}
               alt={`${value?.name} ${value?.city}`}
               fill
               className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
