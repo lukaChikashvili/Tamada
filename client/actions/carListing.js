@@ -3,6 +3,7 @@
 import { serializeTamadaData } from "@/lib/helpers";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 
 export async function getTamadaFilters() {
@@ -270,5 +271,54 @@ export async function toggleSavedTamada(tamadaId) {
     };
   } catch (error) {
     throw new Error("Error toggling saved car:" + error.message);
+  }
+}
+
+
+
+export async function getSavedTamadas() {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return {
+        success: false,
+        error: "Unauthorized",
+      };
+    }
+
+   
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found",
+      };
+    }
+
+    
+    const savedTamadas = await db.userSavedTamada.findMany({
+      where: { userId: user.id },
+      include: {
+        tamada: true,
+      },
+      orderBy: { savedAt: "desc" },
+    });
+
+    
+    const tamadas = savedTamadas.map((saved) => serializeCarData(saved.tamada));
+
+    return {
+      success: true,
+      data: tamadas,
+    };
+  } catch (error) {
+    console.error("Error fetching saved tamadas:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
   }
 }

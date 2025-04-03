@@ -1,12 +1,66 @@
 "use client"
 
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 import { CardContent } from './ui/card';
+import { useRouter } from 'next/navigation';
+import useFetch from '@/hooks/use-fetch';
+import { toggleSavedTamada } from '@/actions/carListing';
+import { useAuth } from '@clerk/nextjs';
 
 const TamadaCard = ({ value }) => {
+  const { isSignedIn } = useAuth();
+  const [isSaved, setIsSaved] = useState(value.wishlisted);
+
+  const router = useRouter();
+
+ 
+
+  const {
+    loading: isToggling,
+    fn: toggleSavedTamadas,
+    data: toggleResult,
+    error: toggleError,
+  } = useFetch(toggleSavedTamada);
+
+  useEffect(() => {
+    if (toggleResult?.success && toggleResult.saved !== isSaved) {
+      setIsSaved(toggleResult.saved);
+      toast.success(toggleResult.message);
+    }
+  }, [toggleResult]);
+
+  const handleToggleSave = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  
+    if (!isSignedIn) {
+      toast.error("Please sign in to save tamadas");
+      router.push("/sign-in");
+      return;
+    }
+  
+    if (isToggling) return;
+  
+    try {
+      const result = await toggleSavedTamadas(value.id);
+      
+      if (result?.success) {
+        setIsSaved(result.saved);  
+        toast.success(result.message);
+      } else {
+        toast.error("Failed to save tamada");
+      }
+    } catch (error) {
+      console.error("Error toggling save:", error);
+      toast.error("An error occurred while saving tamada");
+    }
+  };
+ 
+
+
   return (
     <div className="relative flex flex-col gap-[10px] w-full border p-4 rounded-md mt-4 shadow-lg overflow-hidden">
       
@@ -25,9 +79,23 @@ const TamadaCard = ({ value }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out pointer-events-none" />
 
             {/* Heart Icon in the Top-Right Corner */}
-            <div className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md cursor-pointer">
-              <Heart className="h-6 w-6 text-red-500" />
-            </div>
+            <Button
+          variant="ghost"
+          size="icon"
+          className={`absolute top-2 right-2 bg-white/90 rounded-full p-1.5 ${
+            isSaved
+              ? "text-red-500 hover:text-red-600"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+          onClick={handleToggleSave}
+          disabled={isToggling}
+        >
+          {isToggling ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Heart className={isSaved ? "fill-current" : ""} size={20} />
+          )}
+        </Button>
           </div>
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
