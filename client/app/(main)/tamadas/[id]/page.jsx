@@ -1,6 +1,7 @@
 import { getTamadaById } from '@/actions/carListing';
 import React from 'react'
 import TamadaDetails from './_components/TamadaDetails';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }) {
   const { id } = await params;

@@ -31,13 +31,13 @@ const Header = async ({ isAdminPage = false}) => {
 
          <div className='flex gap-4'>
           <SignedIn>
-             <Link href = "saved-tamadas">
+             <Link href = "/saved-tamadas">
               <Button variant="outline" className='flex gap-4 cursor-pointer'>
                 <User />
                 <span className='hidden md:inline'>დაჯავშნილი თამადები</span>
                 </Button></Link>
 
-                <Link href = "saved-tamadas">
+                <Link href = "/saved-tamadas">
               <Button variant="destructive" className='flex gap-4 cursor-pointer'>
                 <Heart />
               <span className='hidden md:inline'>შენახული თამადები</span>

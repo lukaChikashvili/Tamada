@@ -107,8 +107,8 @@ const TamadaCard = ({ value }) => {
       {/* Card Content */}
       <CardContent>
         <h2 className="font-bold text-slate-800">{value?.name}</h2>
-        <h1 className="font-bold text-red-500 text-2xl">{value?.price}</h1>
-        <p>{value?.birth} - {value?.city}</p>
+        <h1 className="font-bold text-red-500 text-2xl">{value?.price} &#x20BE;</h1>
+        <p>{value?.year} - {value?.city}</p>
       </CardContent>
 
       {/* Button */}
