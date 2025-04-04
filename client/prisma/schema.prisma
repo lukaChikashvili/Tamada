@@ -90,6 +90,7 @@ model MeetingBooking {
    userId   String
    user     User         @relation(fields: [userId], references: [id])
    bookingDate   DateTime     @db.Date
+   status        BookingStatus @default(PENDING)
    startTime    String
    endTime     String
    notes  String?
@@ -101,4 +102,12 @@ model MeetingBooking {
     @@index([bookingDate])
     
 
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
 }
