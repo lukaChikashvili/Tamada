@@ -20,7 +20,7 @@ const TamadaCard = ({ value }) => {
 
   const {
     loading: isToggling,
-    fn: toggleSavedTamadas,
+    fn: toggleSavedTamadasFn,
     data: toggleResult,
     error: toggleError,
   } = useFetch(toggleSavedTamada);
@@ -30,7 +30,13 @@ const TamadaCard = ({ value }) => {
       setIsSaved(toggleResult.saved);
       toast.success(toggleResult.message);
     }
-  }, [toggleResult]);
+  }, [toggleResult, isSaved]);
+
+  useEffect(() => {
+    if (toggleError) {
+      toast.error("Failed to update favorites");
+    }
+  }, [toggleError]);
 
   const handleToggleSave = async (e) => {
     e.preventDefault();
@@ -45,9 +51,9 @@ const TamadaCard = ({ value }) => {
     if (isToggling) return;
   
     try {
-      const result = await toggleSavedTamadas(value.id);
+      const result = await toggleSavedTamadasFn(value.id);
       
-      if (result?.success) {
+      if (result?.success  && result.saved !== isSaved) {
         setIsSaved(result.saved);  
         toast.success(result.message);
       } else {
