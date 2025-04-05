@@ -114,15 +114,34 @@ const TamadaFilters = ({ filters }) => {
     handleFilterChange(filterName, "");
   };
 
+  const clearFilters = () => {
+    setName("");
+    setLanguage("");
+    setCity("");
+    setStomachSize("");
+    setPriceRange([filters.priceRange.min, filters.priceRange.max]);
+    setSortBy("newest");
+
+  
+    const params = new URLSearchParams();
+    const search = searchParams.get("search");
+    if (search) params.set("search", search);
+
+    const query = params.toString();
+    const url = query ? `${pathname}?${query}` : pathname;
+
+    router.push(url);
+    setIsSheetOpen(false);
+  };
 
 
   return (
     <div>
-      <div className="flex lg:flex-col justify-between gap-4">
+      <div className="flex lg:flex-col justify-between gap-4 ">
         {/* Mobile Filters */}
-        <div className="lg:hidden mb-4">
-          <div className="flex items-center">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <div className="lg:hidden mb-4  ">
+          <div className="flex items-center  ">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
               <SheetTrigger asChild>
                 <Button variant="outline" className="flex items-center gap-2">
                   <Filter className="h-4 w-4" />
@@ -149,7 +168,7 @@ const TamadaFilters = ({ filters }) => {
                 </div>
 
                 <SheetFooter className="sm:justify-between flex-row pt-2 border-t space-x-4 mt-auto">
-                  <Button type="button" variant="outline" className="flex-1">
+                  <Button type="button" variant="outline" className="flex-1" onClick = {clearFilters}>
                     რესეთი
                   </Button>
                   <Button type="button" className="flex-1">
@@ -187,7 +206,7 @@ const TamadaFilters = ({ filters }) => {
                 ფილტრები
               </h3>
               {activeFilterCount > 0 && (
-                <Button variant="ghost" size="sm" className="h-8 text-sm text-gray-600">
+                <Button onClick = {clearFilters} variant="ghost" size="sm" className="h-8 text-sm text-gray-600">
                   <X className="mr-1 h-3 w-3" />
                   გაასუფთავე ყველა
                 </Button>
