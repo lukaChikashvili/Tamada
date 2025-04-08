@@ -1,5 +1,6 @@
 "use server"
 
+import { serializeTamadaData } from "@/lib/helpers";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/dist/types/server";
 import { revalidatePath } from "next/cache";
@@ -71,3 +72,62 @@ export async function meetingTamada({
     };
    }
 }
+
+
+export async function getUserMeetings() {
+    try {
+      const { userId } = await auth();
+      if (!userId) {
+        return {
+          success: false,
+          error: "Unauthorized",
+        };
+      }
+  
+    
+      const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+  
+      if (!user) {
+        return {
+          success: false,
+          error: "User not found",
+        };
+      }
+  
+     
+      const bookings = await db.meetingBooking.findMany({
+        where: { userId: user.id },
+        include: {
+          tamada: true,
+        },
+        orderBy: { bookingDate: "desc" },
+      });
+  
+      
+      const formattedBookings = bookings.map((booking) => ({
+        id: booking.id,
+        tamadaId: booking.tamadaId,
+        tamada: serializeTamadaData(booking.tamada),
+        bookingDate: booking.bookingDate.toISOString(),
+        startTime: booking.startTime,
+        endTime: booking.endTime,
+        status: booking.status,
+        notes: booking.notes,
+        createdAt: booking.createdAt.toISOString(),
+        updatedAt: booking.updatedAt.toISOString(),
+      }));
+  
+      return {
+        success: true,
+        data: formattedBookings,
+      };
+    } catch (error) {
+      console.error("Error fetching test drives:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
