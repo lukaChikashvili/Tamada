@@ -131,3 +131,83 @@ export async function getUserMeetings() {
       };
     }
   }
+
+
+  export async function cancelMeeting(bookingId) {
+    try {
+      const { userId } = await auth();
+      if (!userId) {
+        return {
+          success: false,
+          error: "Unauthorized",
+        };
+      }
+  
+      
+      const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+  
+      if (!user) {
+        return {
+          success: false,
+          error: "User not found",
+        };
+      }
+  
+      
+      const booking = await db.meetingBooking.findUnique({
+        where: { id: bookingId },
+      });
+  
+      if (!booking) {
+        return {
+          success: false,
+          error: "Booking not found",
+        };
+      }
+  
+      
+      if (booking.userId !== user.id || user.role !== "ADMIN") {
+        return {
+          success: false,
+          error: "Unauthorized to cancel this booking",
+        };
+      }
+  
+      
+      if (booking.status === "CANCELLED") {
+        return {
+          success: false,
+          error: "Booking is already cancelled",
+        };
+      }
+  
+      if (booking.status === "COMPLETED") {
+        return {
+          success: false,
+          error: "Cannot cancel a completed booking",
+        };
+      }
+  
+     
+      await db.meetingBooking.update({
+        where: { id: bookingId },
+        data: { status: "CANCELLED" },
+      });
+  
+      revalidatePath("/reservations");
+      revalidatePath("/admin/meetings");
+  
+      return {
+        success: true,
+        message: "Test drive cancelled successfully",
+      };
+    } catch (error) {
+      console.error("Error cancelling test drive:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
