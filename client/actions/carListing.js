@@ -106,7 +106,7 @@ export async function getTamadas({
         status: "AVAILABLE",
       };
 
-      console.log("Query Filters:", JSON.stringify(where, null, 2));
+      
   
       if (search) {
         where.OR = [
@@ -158,7 +158,7 @@ export async function getTamadas({
         orderBy,
       });
 
-      console.log(tamadas)
+      
   
 
       let wishlisted = new Set();

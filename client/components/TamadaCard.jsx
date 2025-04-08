@@ -25,12 +25,15 @@ const TamadaCard = ({ value }) => {
     error: toggleError,
   } = useFetch(toggleSavedTamada);
 
-  useEffect(() => {
-    if (toggleResult?.success && toggleResult.saved !== isSaved) {
-      setIsSaved(toggleResult.saved);
-      toast.success(toggleResult.message);
-    }
-  }, [toggleResult, isSaved]);
+  const [hasShownToast, setHasShownToast] = useState(false);
+
+useEffect(() => {
+  if (toggleResult?.success && !hasShownToast) {
+    setIsSaved(toggleResult.saved);
+    toast.success(toggleResult.message);
+    setHasShownToast(true);
+  }
+}, [toggleResult, hasShownToast]);
 
   useEffect(() => {
     if (toggleError) {
@@ -38,32 +41,22 @@ const TamadaCard = ({ value }) => {
     }
   }, [toggleError]);
 
-  const handleToggleSave = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  
-    if (!isSignedIn) {
-      toast.error("Please sign in to save tamadas");
-      router.push("/sign-in");
-      return;
-    }
-  
-    if (isToggling) return;
-  
-    try {
-      const result = await toggleSavedTamadasFn(value.id);
-      
-      if (result?.success  && result.saved !== isSaved) {
-        setIsSaved(result.saved);  
-        toast.success(result.message);
-      } else {
-        toast.error("Failed to save tamada");
-      }
-    } catch (error) {
-      console.error("Error toggling save:", error);
-      toast.error("An error occurred while saving tamada");
-    }
-  };
+ const handleToggleSave = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setHasShownToast(false);
+
+  if (!isSignedIn) {
+    toast.error("Please sign in to save cars");
+    router.push("/sign-in");
+    return;
+  }
+
+  if (isToggling) return;
+
+   await toggleSavedTamadasFn(value.id);
+
+ }
  
 
 
@@ -78,6 +71,7 @@ const TamadaCard = ({ value }) => {
               src={value?.images[0]}
               alt={`${value?.name} ${value?.city}`}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
             />
 

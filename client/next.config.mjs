@@ -7,7 +7,7 @@ const nextConfig = {
     bodySizeLimit: '10mb', 
   },
     images: {
-        domains: ["cdn.gencraft.com"],
+        
         remotePatterns: [
             {
               protocol: 'https',
@@ -30,6 +30,11 @@ const nextConfig = {
               {
                 protocol: 'https',
                 hostname: 'kwhwuapwfbfrepzfxkeu.supabase.co'
+              },
+
+              {
+                protocol: 'https',
+                hostname: 'cdn.gencraft.com'
               }
           ],      },
 };
