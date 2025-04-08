@@ -78,7 +78,7 @@ const TamadaDetails = ({ tamada, meetingInfo}) => {
           router.push("/sign-in");
           return;
         }
-        router.push(`/test-drive/${tamada.id}`);
+        router.push(`/meeting/${tamada.id}`);
       };
     
     
