@@ -69,7 +69,7 @@ export async function getAdminMeetings({ search = "", status = "" }) {
       }
   
       
-      const bookings = await db.testDriveBooking.findMany({
+      const bookings = await db.meetingBooking.findMany({
         where,
         include: {
           tamada: true,
@@ -115,4 +115,171 @@ export async function getAdminMeetings({ search = "", status = "" }) {
   }
 
 
+  export async function updateMeetingStatus(bookingId, newStatus) {
+    try {
+      const { userId } = await auth();
+      if (!userId) throw new Error("Unauthorized");
   
+      
+      const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+  
+      if (!user || user.role !== "ADMIN") {
+        throw new Error("Unauthorized access");
+      }
+  
+     
+      const booking = await db.meetingBooking.findUnique({
+        where: { id: bookingId },
+      });
+  
+      if (!booking) {
+        throw new Error("Booking not found");
+      }
+  
+      
+      const validStatuses = [
+        "PENDING",
+        "CONFIRMED",
+        "COMPLETED",
+        "CANCELLED",
+        "NO_SHOW",
+      ];
+      if (!validStatuses.includes(newStatus)) {
+        return {
+          success: false,
+          error: "Invalid status",
+        };
+      }
+  
+      
+      await db.meetingBooking.update({
+        where: { id: bookingId },
+        data: { status: newStatus },
+      });
+  
+      
+      revalidatePath("/admin/meetings");
+      revalidatePath("/reservations");
+  
+      return {
+        success: true,
+        message: "Test drive status updated successfully",
+      };
+    } catch (error) {
+      throw new Error("Error updating test drive status:" + error.message);
+    }
+  }
+  
+  export async function getDashboardData() {
+    try {
+      const { userId } = await auth();
+      if (!userId) throw new Error("Unauthorized");
+  
+      
+      const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+  
+      if (!user || user.role !== "ADMIN") {
+        return {
+          success: false,
+          error: "Unauthorized",
+        };
+      }
+  
+
+      const [tamadas, meetings] = await Promise.all([
+   
+        db.tamada.findMany({
+          select: {
+            id: true,
+            status: true,
+            featured: true,
+          },
+        }),
+  
+  
+        db.meetingBooking.findMany({
+          select: {
+            id: true,
+            status: true,
+            tamadaId: true,
+          },
+        }),
+      ]);
+  
+      
+      const totalTamadas = tamadas.length;
+      const availableTamadas = tamadas.filter(
+        (tamada) => tamada.status === "AVAILABLE"
+      ).length;
+      const soldCars = tamadas.filter((tamada) => tamada.status === "SOLD").length;
+      const unavailableCars = tamadas.filter(
+        (tamada) => tamada.status === "UNAVAILABLE"
+      ).length;
+      const featuredCars = tamadas.filter((tamada) => tamada.featured === true).length;
+  
+ 
+      const totalBookings = meetings.length;
+      const pendingTestDrives = meetings.filter(
+        (td) => td.status === "PENDING"
+      ).length;
+      const confirmedTestDrives = meetings.filter(
+        (td) => td.status === "CONFIRMED"
+      ).length;
+      const completedTestDrives = meetings.filter(
+        (td) => td.status === "COMPLETED"
+      ).length;
+      const cancelledTestDrives = meetings.filter(
+        (td) => td.status === "CANCELLED"
+      ).length;
+      const noShowTestDrives = meetings.filter(
+        (td) => td.status === "NO_SHOW"
+      ).length;
+  
+      
+      const completedTestDriveCarIds = meetings
+        .filter((td) => td.status === "COMPLETED")
+        .map((td) => td.carId);
+  
+      const soldCarsAfterTestDrive = tamadas.filter(
+        (tamada) =>
+        tamada.status === "SOLD" && completedTestDriveCarIds.includes(tamada.id)
+      ).length;
+  
+      const conversionRate =
+        completedTestDrives > 0
+          ? (soldCarsAfterTestDrive / completedTestDrives) * 100
+          : 0;
+  
+      return {
+        success: true,
+        data: {
+          tamadas: {
+            total: totalTamadas,
+            available: availableTamadas,
+            sold: soldCars,
+            unavailable: unavailableCars,
+            featured: featuredCars,
+          },
+          testDrives: {
+            total: totalTestDrives,
+            pending: pendingTestDrives,
+            confirmed: confirmedTestDrives,
+            completed: completedTestDrives,
+            cancelled: cancelledTestDrives,
+            noShow: noShowTestDrives,
+            conversionRate: parseFloat(conversionRate.toFixed(2)),
+          },
+        },
+      };
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
