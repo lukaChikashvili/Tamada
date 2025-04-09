@@ -20,10 +20,10 @@ import { z } from 'zod'
 
 const meetingSchema = z.object({
     date: z.date({
-      required_error: "Please select a date for your test drive",
+      required_error: "აირჩიეთ თარიღი შეხვედრის დაჯავშნამდე",
     }),
     timeSlot: z.string({
-      required_error: "Please select a time slot",
+      required_error: "აირჩიეთ დროის მონაკვეთი",
     }),
     notes: z.string().optional(),
   });
@@ -34,6 +34,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [bookingDetails, setBookingDetails] = useState(null);
+    
     
     const {
         control,
@@ -50,6 +51,8 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
           notes: "",
         },
       });
+
+      const dealership = meetingInfo?.dealership;
       
       const existingBookings = meetingInfo?.existingBookings || [];
 
@@ -91,23 +94,99 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
         }
       }, [bookingError]);
 
-      const onSubmit = async (data) => {
-        const selectedSlot = availableTimeSlots.find(
-          (slot) => slot.id === data.timeSlot
+
+      useEffect(() => {
+        if (!selectedDate || !dealership?.workingHours) return;
+    
+        const selectedDayOfWeek = format(selectedDate, "EEEE").toUpperCase();
+    
+        
+        const daySchedule = dealership.workingHours.find(
+          (day) => day.dayOfWeek === selectedDayOfWeek
         );
     
-        if (!selectedSlot) {
-          toast.error("Selected time slot is not available");
+        if (!daySchedule || !daySchedule.isOpen) {
+          setAvailableTimeSlots([]);
           return;
         }
     
+       
+        const openHour = parseInt(daySchedule.openTime.split(":")[0]);
+        const closeHour = parseInt(daySchedule.closeTime.split(":")[0]);
+    
+       
+        const slots = [];
+        for (let hour = openHour; hour < closeHour; hour++) {
+          const startTime = `${hour.toString().padStart(2, "0")}:00`;
+          const endTime = `${(hour + 1).toString().padStart(2, "0")}:00`;
+    
+         
+          const isBooked = existingBookings.some((booking) => {
+            const bookingDate = booking.date;
+            return (
+              bookingDate === format(selectedDate, "yyyy-MM-dd") &&
+              (booking.startTime === startTime || booking.endTime === endTime)
+            );
+          });
+    
+          if (!isBooked) {
+            slots.push({
+              id: `${startTime}-${endTime}`,
+              label: `${startTime} - ${endTime}`,
+              startTime,
+              endTime,
+            });
+          }
+        }
+    
+        setAvailableTimeSlots(slots);
+    
+        
+        setValue("timeSlot", "");
+      }, [selectedDate]);
+
+      const isDayDisabled = (day) => {
+        
+        if (day < new Date()) {
+          return true;
+        }
+    
+        
+        const dayOfWeek = format(day, "EEEE").toUpperCase();
+    
+        
+        const daySchedule = dealership?.workingHours?.find(
+          (schedule) => schedule.dayOfWeek === dayOfWeek
+        );
+    
+       
+        return !daySchedule || !daySchedule.isOpen;
+      };
+
+
+
+
+
+
+
+      const onSubmit = async (data) => {
+
+        const selectedSlot = availableTimeSlots.find(
+            (slot) => slot.id === data.timeSlot
+          );
+      
+          if (!selectedSlot) {
+            toast.error("Selected time slot is not available");
+            return;
+          }
+     
         await bookTestDriveFn({
-          tamadaId: tamada.id,
-          bookingDate: format(data.date, "yyyy-MM-dd"),
-          startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime,
-          notes: data.notes || "",
-        });
+            tamadaId: tamada.id,
+            bookingDate: format(data.date, "yyyy-MM-dd"),
+            startTime: selectedSlot.startTime,
+            endTime: selectedSlot.endTime,
+            notes: data.notes || "",
+          });
       };
 
       const handleCloseConfirmation = () => {
@@ -174,6 +253,28 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
           </CardContent>
         </Card>
 
+        <Card className="mt-6">
+          <CardContent className="p-6">
+            <h2 className="text-xl font-bold mb-4">Dealership Info</h2>
+            <div className="text-sm">
+              <p className="font-medium">
+                {dealership?.name || "Vehiql Motors"}
+              </p>
+              <p className="text-gray-600 mt-1">
+                {dealership?.address || "Address not available"}
+              </p>
+              <p className="text-gray-600 mt-3">
+                <span className="font-medium">Phone:</span>{" "}
+                {dealership?.phone || "Not available"}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-medium">Email:</span>{" "}
+                {dealership?.email || "Not available"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
        
         
       </div>
@@ -215,7 +316,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            
+                            //disabled={isDayDisabled}
                             initialFocus
                           />
                         </PopoverContent>
@@ -230,10 +331,9 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                 />
               </div>
 
-          
               <div className="space-y-2">
                 <label className="block text-sm font-medium">
-                  აირჩიე დროის მონაკვეთი
+                  Select a Time Slot
                 </label>
                 <Controller
                   name="timeSlot"
@@ -251,7 +351,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                           <SelectValue
                             placeholder={
                               !selectedDate
-                                ? "გთხოვთ აირჩიოთ თარიღი"
+                                ? "Please select a date first"
                                 : availableTimeSlots.length === 0
                                 ? "No available slots on this date"
                                 : "Select a time slot"
@@ -275,6 +375,46 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                   )}
                 />
               </div>
+
+
+
+
+
+
+
+
+              {selectedDate && (
+  <div className="space-y-2">
+    <label className="block text-sm font-medium">
+      აირჩიე დროის მონაკვეთი
+    </label>
+    <Controller
+      name="timeSlot"
+      control={control}
+      render={({ field }) => (
+        <Select onValueChange={field.onChange} value={field.value}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="აირჩიე დრო" />
+          </SelectTrigger>
+          <SelectContent>
+            {availableTimeSlots?.map((slot) => (
+              <SelectItem key={slot} value={slot}>
+                {slot}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    />
+    {errors.timeSlot && (
+      <p className="text-sm font-medium text-red-500 mt-1">
+        {errors.timeSlot.message}
+      </p>
+    )}
+  </div>
+)}
+
+          
 
               
               <div className="space-y-2">

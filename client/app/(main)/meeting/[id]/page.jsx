@@ -12,12 +12,14 @@ export async function generateMetadata() {
 
 const MeetingPage = async ({ params }) => {
 
-    const { id } = params;
+    const { id } = await params;
     const result = await getTamadaById(id);
 
     if (!result.success) {
         notFound();
       }
+
+
     
 
   return (

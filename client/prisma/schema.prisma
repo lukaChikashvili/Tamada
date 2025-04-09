@@ -83,6 +83,47 @@ model UserSavedTamada {
    @@index([tamadaId])
 }
 
+
+model DealershipInfo {
+  id           String        @id @default(uuid())
+  name         String        @default(" თამადა")
+  address      String        @default("კორნელი გაგუას ქუჩა, 12") 
+  phone        String        @default("569 55 98 43")
+  email        String        @default("contact@tamada.com")
+  workingHours WorkingHour[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+
+model WorkingHour {
+  id             String       @id @default(uuid())
+  dealershipId   String
+  dealership     DealershipInfo   @relation(fields: [dealershipId], references: [id], onDelete: Cascade)
+  dayOfWeek      DayOfWeek
+  openTime       String       // Format: "HH:MM" (24-hour)
+  closeTime      String       // Format: "HH:MM" (24-hour)
+  isOpen         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([dealershipId, dayOfWeek])
+  @@index([dealershipId])
+  @@index([dayOfWeek])
+  @@index([isOpen])
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+
 model MeetingBooking {
    id      String     @id @default(uuid())
    tamadaId  String   

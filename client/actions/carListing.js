@@ -251,7 +251,7 @@ export async function toggleSavedTamada(tamadaId) {
       return {
         success: true,
         saved: false,
-        message: "tamada removed from favorites",
+        message: "თამადა აღარ არის ფავორიტი",
       };
     }
 
@@ -267,7 +267,7 @@ export async function toggleSavedTamada(tamadaId) {
     return {
       success: true,
       saved: true,
-      message: "tamadas added to favorites",
+      message: "თამადა წარმატებით შეინახა",
     };
   } catch (error) {
     throw new Error("Error toggling saved car:" + error.message);
@@ -386,17 +386,32 @@ export async function getTamadaById(tamadaId) {
       };
     }
 
+    const dealership = await db.dealershipInfo.findFirst({
+      include: {
+        workingHours: true,
+      },
+    });
+
     
    
     return {
       success: true,
-      data: {
+       data: {
         ...serializeTamadaData(tamada, isWishlisted),
         testDriveInfo: {
           userMeeting,
-         
-          
-        
+          dealership: dealership
+            ? {
+                ...dealership,
+                createdAt: dealership.createdAt.toISOString(),
+                updatedAt: dealership.updatedAt.toISOString(),
+                workingHours: dealership.workingHours.map((hour) => ({
+                  ...hour,
+                  createdAt: hour.createdAt.toISOString(),
+                  updatedAt: hour.updatedAt.toISOString(),
+                })),
+              }
+            : null,
         },
       },
     };

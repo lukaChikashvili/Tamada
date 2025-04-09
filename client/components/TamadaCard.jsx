@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import useFetch from '@/hooks/use-fetch';
 import { toggleSavedTamada } from '@/actions/carListing';
 import { useAuth } from '@clerk/nextjs';
+import { toast } from 'sonner';
 
 const TamadaCard = ({ value }) => {
   const { isSignedIn } = useAuth();
@@ -47,7 +48,7 @@ useEffect(() => {
   setHasShownToast(false);
 
   if (!isSignedIn) {
-    toast.error("Please sign in to save cars");
+    toast.error("გთხოვთ გაიაროთ ავტორიზაცია");
     router.push("/sign-in");
     return;
   }

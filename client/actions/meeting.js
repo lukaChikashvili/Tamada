@@ -7,29 +7,27 @@ import { revalidatePath } from "next/cache";
 
 export async function meetingTamada({
     tamadaId,
-    bookingDate, 
-    startTime, 
-    endTime,
-    notes
-}) {
-   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("You must be logged in to book a test drive");
-
-   
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-    });
-
-    if (!user) throw new Error("User not found in database");
-
-    const tamada = await db.tamada.findUnique({
-        where: {id: tamadaId, status: "AVAILABLE"},
-    });
-
-    if(!tamada) throw new Error("Car not available for test drive");
-
-    const existingBooking = await db.meetingBooking.findFirst({
+    bookingDate,
+    notes,
+  }) {
+    try {
+      const { userId } = await auth();
+      if (!userId) throw new Error("You must be logged in to book a meeting");
+  
+      const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+  
+      if (!user) throw new Error("User not found in database");
+  
+      const tamada = await db.tamada.findUnique({
+        where: { id: tamadaId, status: "AVAILABLE" },
+      });
+  
+      if (!tamada) throw new Error("Tamada not available for booking");
+  
+      
+      const existingBooking = await db.meetingBooking.findFirst({
         where: {
           tamadaId,
           bookingDate: new Date(bookingDate),
@@ -37,13 +35,11 @@ export async function meetingTamada({
           status: { in: ["PENDING", "CONFIRMED"] },
         },
       });
-
+  
       if (existingBooking) {
-        throw new Error(
-          "This time slot is already booked. Please select another time."
-        );
+        throw new Error("Tamada is already booked on this date.");
       }
-
+  
       const booking = await db.meetingBooking.create({
         data: {
           tamadaId,
@@ -55,23 +51,22 @@ export async function meetingTamada({
           status: "PENDING",
         },
       });
-
-      revalidatePath(`/meeting/${tamadaId}`);
-    revalidatePath(`/tamadas/${tamadaId}`);
   
-    return {
+      revalidatePath(`/meeting/${tamadaId}`);
+      revalidatePath(`/tamadas/${tamadaId}`);
+  
+      return {
         success: true,
         data: booking,
       };
-    
-   } catch (error) {
-    console.error("Error booking test drive:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to book test drive",
-    };
-   }
-}
+    } catch (error) {
+      console.error("Error booking meeting:", error);
+      return {
+        success: false,
+        error: error.message || "Failed to book meeting",
+      };
+    }
+  }
 
 
 export async function getUserMeetings() {
@@ -111,9 +106,9 @@ export async function getUserMeetings() {
         tamadaId: booking.tamadaId,
         tamada: serializeTamadaData(booking.tamada),
         bookingDate: booking.bookingDate.toISOString(),
-        startTime: booking.startTime,
-        endTime: booking.endTime,
         status: booking.status,
+        startTime,
+        endTime,
         notes: booking.notes,
         createdAt: booking.createdAt.toISOString(),
         updatedAt: booking.updatedAt.toISOString(),
