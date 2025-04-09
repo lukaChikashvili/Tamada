@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import useFetch from '@/hooks/use-fetch'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { CalendarIcon, CheckCircle2, Loader2, Wine } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -255,21 +255,21 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
 
         <Card className="mt-6">
           <CardContent className="p-6">
-            <h2 className="text-xl font-bold mb-4">Dealership Info</h2>
+            <h2 className="text-xl font-bold mb-4">საიტის შესახებ</h2>
             <div className="text-sm">
               <p className="font-medium">
-                {dealership?.name || "Vehiql Motors"}
+                {dealership?.name || "თამადა"}
               </p>
               <p className="text-gray-600 mt-1">
-                {dealership?.address || "Address not available"}
+                {dealership?.address || "მისამართი ვერ მოიძებნა"}
               </p>
               <p className="text-gray-600 mt-3">
-                <span className="font-medium">Phone:</span>{" "}
-                {dealership?.phone || "Not available"}
+                <span className="font-medium">ტელეფონი:</span>{" "}
+                {dealership?.phone || "არ არის ხელმისაწვდომი"}
               </p>
               <p className="text-gray-600">
-                <span className="font-medium">Email:</span>{" "}
-                {dealership?.email || "Not available"}
+                <span className="font-medium">ელ-ფოსტა:</span>{" "}
+                {dealership?.email || "არ არის ხელმისაწვდომი"}
               </p>
             </div>
           </CardContent>
@@ -316,7 +316,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            //disabled={isDayDisabled}
+                            disabled={isDayDisabled}
                             initialFocus
                           />
                         </PopoverContent>
@@ -331,9 +331,10 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                 />
               </div>
 
+             
               <div className="space-y-2">
                 <label className="block text-sm font-medium">
-                  Select a Time Slot
+                  აირჩიე დროის მონაკვეთი
                 </label>
                 <Controller
                   name="timeSlot"
@@ -351,10 +352,10 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                           <SelectValue
                             placeholder={
                               !selectedDate
-                                ? "Please select a date first"
+                                ? "გხთოვთ აირჩიეთ თარიღი"
                                 : availableTimeSlots.length === 0
-                                ? "No available slots on this date"
-                                : "Select a time slot"
+                                ? "დროის მონაკვეთი არ არის"
+                                : "აირჩიე დროის მონაკვეთი"
                             }
                           />
                         </SelectTrigger>
@@ -378,41 +379,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
 
 
 
-
-
-
-
-
-              {selectedDate && (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium">
-      აირჩიე დროის მონაკვეთი
-    </label>
-    <Controller
-      name="timeSlot"
-      control={control}
-      render={({ field }) => (
-        <Select onValueChange={field.onChange} value={field.value}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="აირჩიე დრო" />
-          </SelectTrigger>
-          <SelectContent>
-            {availableTimeSlots?.map((slot) => (
-              <SelectItem key={slot} value={slot}>
-                {slot}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-    />
-    {errors.timeSlot && (
-      <p className="text-sm font-medium text-red-500 mt-1">
-        {errors.timeSlot.message}
-      </p>
-    )}
-  </div>
-)}
+              
 
           
 
@@ -482,7 +449,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
               შეხვედრა თამადასთან დაიჯავშნა წარმატებით
             </DialogTitle>
             <DialogDescription>
-              Your test drive has been confirmed with the following details:
+              თამადასთან შეხვედრა დაინიშნა შემდეგი დეტალებით
             </DialogDescription>
           </DialogHeader>
 
@@ -496,11 +463,11 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium">Date:</span>
+                  <span className="font-medium">თარიღი:</span>
                   <span>{bookingDetails.date}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium">Time Slot:</span>
+                  <span className="font-medium">დროის მონაკვეთი:</span>
                   <span>{bookingDetails.timeSlot}</span>
                 </div>
               
@@ -513,7 +480,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
           )}
 
           <div className="flex justify-end">
-            <Button onClick={handleCloseConfirmation}>Done</Button>
+            <Button variant="destructive" onClick={handleCloseConfirmation}>დასრულება</Button>
           </div>
         </DialogContent>
       </Dialog>

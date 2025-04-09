@@ -8,6 +8,8 @@ import { revalidatePath } from "next/cache";
 export async function meetingTamada({
     tamadaId,
     bookingDate,
+    startTime,
+    endTime,
     notes,
   }) {
     try {
@@ -107,8 +109,8 @@ export async function getUserMeetings() {
         tamada: serializeTamadaData(booking.tamada),
         bookingDate: booking.bookingDate.toISOString(),
         status: booking.status,
-        startTime,
-        endTime,
+        startTime: booking.startTime,
+        endTime: booking.endTime,
         notes: booking.notes,
         createdAt: booking.createdAt.toISOString(),
         updatedAt: booking.updatedAt.toISOString(),
