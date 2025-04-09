@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { format, parseISO } from "date-fns";
-import { Calendar, Car, Clock, User, Loader2, ArrowRight } from "lucide-react";
+import { Calendar,  Clock, User, Loader2, ArrowRight, Wine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -79,12 +79,12 @@ export function MeetingCard({
                   src={booking.tamada.images[0]}
                   alt={`${booking.tamada.name} ${booking.tamada.city}`}
                   fill
-                  className="object-cover"
+                  className="object-cover rounded-md shadow-lg"
                 />
               </div>
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <Car className="h-12 w-12 text-gray-400" />
+                <Wine className="h-12 w-12 text-gray-400" />
               </div>
             )}
             <div className="absolute top-2 right-2 sm:hidden">
@@ -129,7 +129,7 @@ export function MeetingCard({
               
               {booking.notes && (
                 <div className="bg-gray-50 p-2 rounded text-sm w-full">
-                  <p className="font-medium">Notes:</p>
+                  <p className="font-medium">კომენტარი:</p>
                   <p className="text-gray-600">{booking.notes}</p>
                 </div>
               )}
@@ -141,10 +141,10 @@ export function MeetingCard({
                 asChild
               >
                 <Link
-                  href={`/cars/${booking.carId}`}
+                  href={`/tamadas/${booking.tamadaId}`}
                   className="flex items-center justify-center"
                 >
-                  View Car
+                  ნახე თამადა
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -160,7 +160,7 @@ export function MeetingCard({
                   {isCancelling ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Cancel"
+                    "გაუქმება"
                   )}
                 </Button>
               )}
@@ -174,18 +174,17 @@ export function MeetingCard({
         <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Cancel Test Drive</DialogTitle>
+              <DialogTitle>გააუქმე შეხვედრა</DialogTitle>
               <DialogDescription>
-                Are you sure you want to cancel your test drive for the{" "}
-                {booking.tamada.year} {booking.tamada.make} {booking.tamada.model}? This
-                action cannot be undone.
+                დარწმუნებული ხარ რომ გინდა გააუქმო შეხვედრა{" "}
+                {booking.tamada.year} {booking.tamada.make} {booking.tamada.model}? მოქმედებას უკან ვერ დააბრუნებ
               </DialogDescription>
             </DialogHeader>
 
             <div className="py-4">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="font-medium">Date:</span>
+                  <span className="font-medium">თარიღი:</span>
                   <span>
                     {format(
                       new Date(booking.bookingDate),
@@ -194,7 +193,7 @@ export function MeetingCard({
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium">Time:</span>
+                  <span className="font-medium">დრო:</span>
                   <span>
                     {formatTime(booking.startTime)} -{" "}
                     {formatTime(booking.endTime)}
@@ -209,7 +208,7 @@ export function MeetingCard({
                 onClick={() => setCancelDialogOpen(false)}
                 disabled={isCancelling}
               >
-                Keep Reservation
+                დატოვე შეხვედრის ჯავშანი
               </Button>
               <Button
                 variant="destructive"
@@ -219,10 +218,10 @@ export function MeetingCard({
                 {isCancelling ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Cancelling...
+                    უქმდება...
                   </>
                 ) : (
-                  "Cancel Reservation"
+                  "გააუქმე შეხვედრა"
                 )}
               </Button>
             </DialogFooter>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import useFetch from '@/hooks/use-fetch';
 import { useAuth } from '@clerk/nextjs';
+import { format } from 'date-fns';
 import {  Calendar, Heart, Languages, MessageSquare, Radius, Share2, Shirt, Wine } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
@@ -56,7 +57,7 @@ const TamadaDetails = ({ tamada, meetingInfo}) => {
           navigator
             .share({
               title: `${tamada.year} ${tamada.name} ${tamada.city}`,
-              text: `Check out this ${tamada.year} ${tamada.name} ${tamada.year} on tmada!`,
+              text: `Check out this ${tamada.year} ${tamada.name} ${tamada.year} on tamada!`,
               url: window.location.href,
             })
             .catch((error) => {
