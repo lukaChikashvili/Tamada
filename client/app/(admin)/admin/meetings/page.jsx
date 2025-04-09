@@ -1,4 +1,4 @@
-import MeetingsList from "./_components/MeetingsList";
+import {MeetingsList} from "./_components/MeetingsList";
 
 export const metadata = {
     title: "შეხვედრები | თამადა ადმინი",
