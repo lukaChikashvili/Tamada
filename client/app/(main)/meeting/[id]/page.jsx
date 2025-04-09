@@ -15,6 +15,8 @@ const MeetingPage = async ({ params }) => {
     const { id } = await params;
     const result = await getTamadaById(id);
 
+    console.log(result)
+
     if (!result.success) {
         notFound();
       }

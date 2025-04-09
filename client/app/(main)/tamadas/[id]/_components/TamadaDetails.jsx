@@ -9,6 +9,7 @@ import {  Calendar, Heart, Languages, MessageSquare, Radius, Share2, Shirt, Wine
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { toast } from 'sonner';
 
 const TamadaDetails = ({ tamada, meetingInfo}) => {
 

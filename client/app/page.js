@@ -13,6 +13,8 @@ import Link from "next/link";
 export default async function Home() {
 
   const featuredTamadas = await getFeaturedTamadas();
+
+  
   return (
     <main className="px-12">
       <section className="relative py-16 md:py-28 texture ">
