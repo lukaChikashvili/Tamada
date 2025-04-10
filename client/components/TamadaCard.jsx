@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +13,9 @@ import { toast } from 'sonner';
 
 const TamadaCard = ({ value }) => {
   const { isSignedIn } = useAuth();
-  const [isSaved, setIsSaved] = useState(value.wishlisted);
+  const [isSaved, setIsSaved] = useState(value?.saved);
+
+  console.log(value)
 
   const router = useRouter();
 
@@ -26,15 +28,14 @@ const TamadaCard = ({ value }) => {
     error: toggleError,
   } = useFetch(toggleSavedTamada);
 
-  const [hasShownToast, setHasShownToast] = useState(false);
 
-useEffect(() => {
-  if (toggleResult?.success && !hasShownToast) {
-    setIsSaved(toggleResult.saved);
-    toast.success(toggleResult.message);
-    setHasShownToast(true);
-  }
-}, [toggleResult, hasShownToast]);
+
+  useEffect(() => {
+    if (toggleResult?.success && toggleResult.saved !== isSaved) {
+      setIsSaved(toggleResult.saved);
+      toast.success(toggleResult.message);
+    }
+  }, [toggleResult, isSaved]);
 
   useEffect(() => {
     if (toggleError) {
@@ -45,7 +46,7 @@ useEffect(() => {
  const handleToggleSave = async (e) => {
   e.preventDefault();
   e.stopPropagation();
-  setHasShownToast(false);
+
 
   if (!isSignedIn) {
     toast.error("გთხოვთ გაიაროთ ავტორიზაცია");
@@ -83,7 +84,7 @@ useEffect(() => {
             <Button
           variant="ghost"
           size="icon"
-          className={`absolute top-2 right-2 bg-white/90 rounded-full p-1.5 ${
+          className={`absolute top-2 right-2 z-10 bg-white/90 rounded-full p-1.5 ${
             isSaved
               ? "text-red-500 hover:text-red-600"
               : "text-gray-600 hover:text-gray-900"

@@ -158,7 +158,7 @@ export async function AddTamadaToDb({tamadaDatato, images}) {
         contentType: `image/${fileExtension}`,
       });
 
-      console.log("Image upload response:", data, error);
+      
 
     if (error) {
       console.error("Error uploading image:", error);
@@ -196,6 +196,7 @@ export async function AddTamadaToDb({tamadaDatato, images}) {
           clothingStyle: tamadaDatato.clothingStyle, // Traditional, modern, mixed
           popularityScore: tamadaDatato.popularityScore , // Popularity rating (0-100)
           eventTypes: tamadaDatato.eventTypes, // Types of events handled
+          status: tamadaDatato.status,
           featured: tamadaDatato.featured,
           createdAt: new Date(), // Timestamp for creation
         }

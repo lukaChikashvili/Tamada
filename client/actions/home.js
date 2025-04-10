@@ -7,7 +7,8 @@ export async function getFeaturedTamadas(limit = 4) {
     try {
         const tamadas = await db.tamada.findMany({
          where: {
-            featured: true
+            featured: true,
+            status: "AVAILABLE",
          },
          take: limit,
          orderBy: {createdAt: "desc"}

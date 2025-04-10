@@ -42,8 +42,8 @@ export default async function Home() {
 
           <div className="flex flex-col md:flex-row items-center gap-12">
 
-          {featuredTamadas.map((value) => (
-            <TamadaCard key = {value.id} value = {value}/>
+          {featuredTamadas?.map((tamada) => (
+            <TamadaCard key = {tamada.id} value = {tamada}/>
           ))}
           </div>
         </div>
