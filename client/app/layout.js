@@ -9,8 +9,8 @@ const inter = Inter({subsets: ["latin"]});
 
 
 export const metadata = {
-  title: "Tamada",
-  description: "Choose your tamada",
+  title: "თამადა | აირჩიე სასურველი თამადა",
+ 
 };
 
 export default function RootLayout({ children }) {

@@ -89,7 +89,7 @@ const MeetingForm = ({ tamada, meetingInfo }) => {
       useEffect(() => {
         if (bookingError) {
           toast.error(
-            bookingError.message || "Failed to book test drive. Please try again."
+            bookingError.message || "მოხდა რაღაც შეცდომა."
           );
         }
       }, [bookingError]);

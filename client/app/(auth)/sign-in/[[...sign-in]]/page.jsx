@@ -4,7 +4,7 @@ import React from 'react'
 
 const SignInPage = () => {
   return (
-    <div>
+    <div className='flex items-center justify-center mt-12'>
       <SignIn />
       
     </div>

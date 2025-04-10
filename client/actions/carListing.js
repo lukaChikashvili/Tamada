@@ -364,27 +364,28 @@ export async function getTamadaById(tamadaId) {
       isWishlisted = !!savedTamada;
     }
 
-    
-    const existingMeeting = await db.meetingBooking.findFirst({
-      where: {
-        tamadaId,
-        userId: dbUser.id,
-        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
     let userMeeting = null;
+    if (dbUser) {
+      const existingMeeting = await db.meetingBooking.findFirst({
+        where: {
+          tamadaId,
+          userId: dbUser.id,
+          status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
 
-    if (existingMeeting) {
-      userMeeting = {
-        id: existingMeeting.id,
-        status: existingMeeting.status,
-        bookingDate: existingMeeting.bookingDate.toISOString(),
-      };
+      if (existingMeeting) {
+        userMeeting = {
+          id: existingMeeting.id,
+          status: existingMeeting.status,
+          bookingDate: existingMeeting.bookingDate.toISOString(),
+        };
+      }
     }
+
 
     const dealership = await db.dealershipInfo.findFirst({
       include: {

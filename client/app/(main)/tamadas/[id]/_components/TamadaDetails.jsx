@@ -41,7 +41,7 @@ const TamadaDetails = ({ tamada, meetingInfo}) => {
 
       const handleSaveTamada = async () => {
         if (!isSignedIn) {
-          toast.error("Please sign in to save tamadas");
+          toast.error("გთხოვთ გაიაროთ ავტორიზაცია");
           router.push("/sign-in");
           return;
         }
@@ -76,7 +76,7 @@ const TamadaDetails = ({ tamada, meetingInfo}) => {
 
       const handleBookTestDrive = () => {
         if (!isSignedIn) {
-          toast.error("Please sign in to book a test drive");
+          toast.error("გაიარეთ ავტორიზაცია შეხვედრის დაჯავშნამდე");
           router.push("/sign-in");
           return;
         }
