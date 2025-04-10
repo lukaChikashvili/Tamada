@@ -31,7 +31,7 @@ const Header = async ({ isAdminPage = false}) => {
 
          <div className='flex gap-4'>
           <SignedIn>
-             <Link href = "/saved-tamadas">
+             <Link href = "/reservations">
               <Button variant="outline" className='flex gap-4 cursor-pointer'>
                 <User />
                 <span className='hidden md:inline'>დაჯავშნილი თამადები</span>

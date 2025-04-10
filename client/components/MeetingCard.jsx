@@ -72,7 +72,7 @@ export function MeetingCard({
       >
         <div className="flex flex-col sm:flex-row">
           
-          <div className="sm:w-1/4 relative h-40 sm:h-auto">
+          <div className="sm:w-1/4 relative h-40 sm:h-auto px-4">
             {booking.tamada.images && booking.tamada.images.length > 0 ? (
               <div className="relative w-full h-full">
                 <Image

@@ -24,7 +24,9 @@ export async function getAdmin() {
 }
 
 
-export async function getAdminMeetings({ search = "", status = "" }) {
+export async function getAdminMeetings(params = {}) {
+  const { search = "", status = "" } = params;
+
     try {
       const { userId } = await auth();
       if (!userId) throw new Error("Unauthorized");
