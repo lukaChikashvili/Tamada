@@ -1,4 +1,5 @@
 import React from 'react'
+import {AddTamadaForm} from './_components/add-tamada-form';
 
 export const metadata = {
     title: "თამადის დამატება | თამადა",
@@ -6,7 +7,7 @@ export const metadata = {
   };
 
 
-import AddTamadaForm from './_components/add-tamada-form';
+
 
 export default function AddTamadaPage() {
     return (
