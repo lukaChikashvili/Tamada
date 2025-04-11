@@ -20,7 +20,7 @@ export default async function Home() {
          <div className="max-w-4x mx-auto text-center ">
             <div>
               <h1 className="text-white text-4xl md:text-5xl max-w-4xl m-auto font-bold leading-[5rem]">აღმოაჩინე უნიკალური თამადები ქართული სუფრისთვის </h1>
-               <p className="mt-6 text-2xl text-slate-300">"გამოცდილება, ხიბლი და სიტყვიერების ხელოვნება ერთ სივრცეში"</p>
+               <p className="mt-6 text-2xl text-slate-300">გამოცდილება, ხიბლი და სიტყვიერების ხელოვნება ერთ სივრცეში</p>
              <p className="text-red-500 bg-white w-[15rem] md:w-120 m-auto rounded-md p-2 shadow-xl mt-12 ">გაახალისე შენი ქორწილი, ქელეხი ან დაბადების დღე</p>
             </div>
             <div className="w-1/2 m-auto mt-8">
