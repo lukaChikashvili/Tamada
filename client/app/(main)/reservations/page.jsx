@@ -2,8 +2,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { getAdminMeetings } from "@/actions/admin";
 import { ReservationsList } from "./_components/ReservationsList";
+import { getUserMeetings } from "@/actions/meeting";
 
 export const metadata = {
   title: "ჩემი დაჯავშნილი შეხვედრები ",
@@ -17,7 +17,7 @@ export default async function ReservationsPage() {
     redirect("/sign-in?redirect=/reservations");
   }
 
-  const reservationsResult = await getAdminMeetings();
+  const reservationsResult = await getUserMeetings();
 
   return (
     <div className="container mx-auto px-12 py-12">
