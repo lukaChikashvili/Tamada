@@ -1,5 +1,6 @@
 import React from 'react'
-import AddTamadaForm from './_components/add-tamada-form';
+import { AddTamadaForm } from './_components/add-tamada-form';
+
 
 
 export const metadata = {

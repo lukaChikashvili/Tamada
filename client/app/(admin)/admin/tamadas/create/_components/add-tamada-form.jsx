@@ -19,7 +19,7 @@ import useFetch from '@/hooks/use-fetch';
 import { AddTamadaToDb, processTamadaImageWithAi } from '@/actions/tamadas';
 import { useRouter } from 'next/navigation';
 
-const AddTamadaForm = () => {
+export const AddTamadaForm = () => {
 
     const languageTypes = ["ქართული", "ინგლისური", "რუსული", "მეგრული"];
     const nationality = ["ქართველი", "სომეხი", "რუსი", "სხვა"];
@@ -844,4 +844,3 @@ const AddTamadaForm = () => {
   )
 }
 
-export default AddTamadaForm
