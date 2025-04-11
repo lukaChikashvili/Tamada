@@ -1,5 +1,4 @@
 import { getFeaturedTamadas } from "@/actions/home";
-import HomeSearch from "@/components/HomeSearch";
 import TamadaCard from "@/components/TamadaCard";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -17,15 +16,15 @@ export default async function Home() {
   
   return (
     <main className="px-12">
-      <section className="relative py-16 md:py-28 texture ">
+      <section className="relative py-12 md:py-24 texture ">
          <div className="max-w-4x mx-auto text-center ">
             <div>
-              <h1 className="text-white text-5xl md:text-5xl max-w-4xl m-auto font-bold leading-[5rem]">იპოვეთ სასურველი თამადა ხელოვნური ინტელექტის დახმარებით</h1>
-
-             <p className="text-red-500 bg-white w-120 m-auto rounded-md p-2 shadow-xl mt-12 ">გაახალისე შენი ქორწილი, ქელეხი ან დაბადების დღე</p>
+              <h1 className="text-white text-4xl md:text-5xl max-w-4xl m-auto font-bold leading-[5rem]">აღმოაჩინე უნიკალური თამადები ქართული სუფრისთვის </h1>
+               <p className="mt-6 text-2xl text-slate-300">"გამოცდილება, ხიბლი და სიტყვიერების ხელოვნება ერთ სივრცეში"</p>
+             <p className="text-red-500 bg-white w-[15rem] md:w-120 m-auto rounded-md p-2 shadow-xl mt-12 ">გაახალისე შენი ქორწილი, ქელეხი ან დაბადების დღე</p>
             </div>
             <div className="w-1/2 m-auto mt-8">
-            <HomeSearch />
+            
             </div>
          </div>
       </section>
@@ -150,7 +149,7 @@ export default async function Home() {
   <div className="container mx-auto px-4 flex flex-col gap-4">
      <h2 className="text-3xl text-white font-bold">მზად ხარ სასურველი თამადა იპოვო?</h2>
 
-     <p className="text-xl text-slate-900">შეურთდი ათასზე მეტ კმაყოფილ მომხმარებელს, რომლებმაც სასურველი თამადა წამებში აარჩიეს</p>
+     <p className="text-xl text-slate-300">შეურთდი ათასზე მეტ კმაყოფილ მომხმარებელს, რომლებმაც სასურველი თამადა წამებში აარჩიეს</p>
 
      <div className="flex flex-col md:flex-row justify-center gap-4">
        <Button variant="outline">

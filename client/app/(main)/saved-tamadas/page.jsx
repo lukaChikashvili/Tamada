@@ -16,7 +16,7 @@ const page = async () => {
 
   return (
     
-        <div className="container mx-auto px-24 py-12">
+        <div className="container mx-auto px-12 md:px-24 py-12">
       <h1 className="text-4xl mb-6 gradient-title text-red-500 font-bold"> შენახული თამადები</h1>
        <SavedTamadaList initialData = {savedTamadasResult} />
     </div>

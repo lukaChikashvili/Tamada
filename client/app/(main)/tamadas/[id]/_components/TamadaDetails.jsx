@@ -86,15 +86,15 @@ const TamadaDetails = ({ tamada, meetingInfo}) => {
     
 
   return (
-    <div className="flex flex-col lg:flex-row gap-20 px-36">
+    <div className="flex flex-col lg:flex-row gap-8 px-4 sm:px-6 md:px-10 lg:px-20 xl:px-36  ">
        <div className="w-full lg:w-7/12">
-          <div className="aspect-video rounded-lg overflow-hidden relative mb-4">
+          <div className="aspect-video rounded-lg overflow-hidden relative mb-4 ">
             {tamada.images && tamada.images.length > 0 ? (
               <Image
                 src={tamada.images[currentImageIndex]}
                 alt={`${tamada.year} ${tamada.name} ${tamada.city}`}
                 fill
-                className="object-cover"
+                className="object-cover "
                 priority
               />
             ) : (

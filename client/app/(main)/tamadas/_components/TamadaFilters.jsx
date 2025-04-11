@@ -137,10 +137,10 @@ const TamadaFilters = ({ filters }) => {
 
   return (
     <div>
-      <div className="flex lg:flex-col justify-between gap-4 ">
+      <div className="flex lg:flex-col justify-between gap-4  ">
         {/* Mobile Filters */}
         <div className="lg:hidden mb-4  ">
-          <div className="flex items-center  ">
+          <div className="flex items-center mx-12 gap-4 ml-4  ">
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
               <SheetTrigger asChild>
                 <Button variant="outline" className="flex items-center gap-2">
@@ -158,7 +158,7 @@ const TamadaFilters = ({ filters }) => {
                   <SheetTitle>ფილტრები</SheetTitle>
                 </SheetHeader>
 
-                <div className="py-6">
+                <div className="py-6 px-12">
                   <TamadaFilterControls
                   filters={filters}
                   currentFilters={currentFilters}
@@ -171,16 +171,13 @@ const TamadaFilters = ({ filters }) => {
                   <Button type="button" variant="outline" className="flex-1" onClick = {clearFilters}>
                     რესეთი
                   </Button>
-                  <Button type="button" className="flex-1">
+                  <Button type="button" variant="destructive" className="flex-1">
                     ძებნა
                   </Button>
                 </SheetFooter>
               </SheetContent>
             </Sheet>
-          </div>
-        </div>
-
-        <Select value={sortBy} onValueChange={(value) => { setSortBy(value); setTimeout(() => applyFilters(), 0); }}>
+            <Select value={sortBy} onValueChange={(value) => { setSortBy(value); setTimeout(() => applyFilters(), 0); }}>
           <SelectTrigger className="w-[180px] lg:w-full">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -196,6 +193,13 @@ const TamadaFilters = ({ filters }) => {
             ))}
           </SelectContent>
         </Select>
+          </div>
+
+      
+
+        </div>
+
+        
 
         {/* Desktop Filters */}
         <div className="hidden lg:block sticky top-24">
