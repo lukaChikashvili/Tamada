@@ -232,7 +232,7 @@ const TamadaDetails = ({ tamada, meetingInfo}) => {
               <p className="text-sm text-gray-600 mb-3">
                 ჩვენი წარმომადგენლები ყველა შეკითხვაზე გიპასუხებენ
               </p>
-              <a href="mailto:help@vehiql.in">
+              <a href="mailto:help@tamada.in">
                 <Button variant="outline" className="w-full">
                   მოითხოვე ინფორმაცია
                 </Button>
